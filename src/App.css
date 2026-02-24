@@ -78,6 +78,16 @@ body {
   border-radius: 4px 0 0 4px;
   outline: none;
 }
+.clear-button {
+  padding: 15px 30px;
+  font-size: 18px;
+  background-color: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
 
 .search-button {
   padding: 15px 30px;
@@ -85,7 +95,6 @@ body {
   background-color: #e63946;
   color: white;
   border: none;
-  border-radius: 0 4px 4px 0;
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s;
@@ -181,8 +190,17 @@ body {
     padding: 12px 20px;
     font-size: 16px;
   }
+  .clear-button {
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
 
-  /* Điều chỉnh khu vực Từ của ngày */
+
   .word-of-day {
     padding: 30px 15px;
   }

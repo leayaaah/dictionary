@@ -1,0 +1,65 @@
+.word-of-day-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+.word-of-day-title {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.word-card {
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.word-title {
+  font-size: 28px;
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+}
+
+.word-pos {
+  font-style: italic;
+  color: #7f8c8d;
+  margin-bottom: 15px;
+}
+
+.word-detail {
+  margin: 8px 0;
+  font-size: 18px;
+}
+
+.word-example {
+  margin: 15px 0 0 0;
+  color: #555;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 6px;
+  border-left: 4px solid #3498db;
+  text-align: left;
+}
+
+.refresh-button {
+  margin-top: 20px;
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.refresh-button:hover {
+  background-color: #2980b9;
+}
+
+.loading-text {
+  text-align: center;
+  padding: 20px;
+}

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-// import './App.css';
+import './App.css';
+import Words from './components/Words';
+import WordOfTheDay from './components/WordOfTheDay';
 
-// 1. Component Thanh điều hướng
 const Header = () => {
   return (
     <header className="header">
@@ -15,13 +16,19 @@ const Header = () => {
   );
 };
 
-// 2. Component Thanh tìm kiếm chính
-const SearchSection = ({ onSearch }) => {
+const SearchSection = ({ onSearch, onClear }) => {
   const [keyword, setKeyword] = useState('');
 
   const handleSearch = (e) => {
-    e.preventDefault(); // Ngăn trang tải lại khi submit form
-    onSearch(keyword);
+    e.preventDefault(); 
+    if (keyword.trim() !== '') {
+      onSearch(keyword.trim());
+    }
+  };
+
+  const handleClear = () => {
+    setKeyword('');
+    onClear(); // Gọi hàm xóa kết quả tìm kiếm ở App
   };
 
   return (
@@ -33,44 +40,45 @@ const SearchSection = ({ onSearch }) => {
         <input 
           type="text" 
           className="search-input"
-          placeholder="Bạn muốn tra từ gì?..." 
+          placeholder="Bạn muốn tra từ gì? (Anh hoặc Việt)..." 
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
         <button type="submit" className="search-button">Tra Cứu</button>
+        {keyword && (
+          <button type="button" className="clear-button" onClick={handleClear} >
+            Xóa
+          </button>
+        )}
       </form>
     </section>
   );
 };
 
-// 3. Component Từ của ngày (Placeholder nội dung)
-const WordOfTheDay = () => {
-  return (
-    <section className="word-of-day">
-      <h2>Từ của ngày</h2>
-      <div className="word-card">
-        <h3>Luminescence</h3>
-        <p className="type">noun (danh từ)</p>
-        <p className="definition">Sự phát sáng mà không sinh ra nhiệt; ánh sáng huỳnh quang.</p>
-      </div>
-    </section>
-  );
-};
-
-// Component Chính chứa toàn bộ ứng dụng
 function App() {
+  // State lưu trữ từ khóa người dùng đang tìm
+  const [searchKeyword, setSearchKeyword] = useState('');
+
   const handleSearchWord = (word) => {
-    // Tạm thời chúng ta chỉ in ra console, sau này sẽ gọi API ở đây
-    console.log("Người dùng đang tìm từ: ", word);
-    alert(`Bạn đang tìm từ: ${word}\n(Chức năng hiển thị kết quả sẽ được xây dựng sau)`);
+    setSearchKeyword(word); // Lưu từ khóa vào state
+  };
+
+  const handleClearSearch = () => {
+    setSearchKeyword(''); // Reset từ khóa về rỗng
   };
 
   return (
     <div className="app-container">
       <Header />
       <main>
-        <SearchSection onSearch={handleSearchWord} />
-        <WordOfTheDay />
+        {/* Truyền hàm xử lý tìm kiếm và xóa vào SearchSection */}
+        <SearchSection onSearch={handleSearchWord} onClear={handleClearSearch} />
+        
+        {/* Chỉ hiển thị Từ của ngày nếu KHÔNG CÓ từ khóa tìm kiếm */}
+        {!searchKeyword && <WordOfTheDay />}
+        
+        {/* Truyền từ khóa xuống component Words để lọc dữ liệu */}
+        <Words searchKeyword={searchKeyword} />
       </main>
       <footer className="footer">
         <p>&copy; 2026 MyDictionary. Bản quyền thuộc về bạn.</p>
