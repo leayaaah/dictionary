@@ -1,0 +1,201 @@
+/* Reset CSS cơ bản */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header Styling */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #e63946; /* Màu đỏ làm điểm nhấn */
+}
+
+.nav-links a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: #e63946;
+}
+
+/* Search Section Styling */
+.search-section {
+  text-align: center;
+  padding: 80px 20px;
+  background-color: #1d3557; /* Nền xanh đậm giống phong cách từ điển */
+  color: white;
+}
+
+.search-section h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.search-section p {
+  font-size: 16px;
+  margin-bottom: 30px;
+  color: #a8b2d1;
+}
+
+.search-form {
+  display: flex;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input {
+  flex: 1;
+  padding: 15px 20px;
+  font-size: 18px;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+}
+
+.search-button {
+  padding: 15px 30px;
+  font-size: 18px;
+  background-color: #e63946;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #d62828;
+}
+
+/* Word of the Day Styling */
+.word-of-day {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.word-of-day h2 {
+  margin-bottom: 30px;
+  color: #1d3557;
+}
+
+.word-card {
+  background: white;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  text-align: left;
+}
+
+.word-card h3 {
+  font-size: 28px;
+  color: #e63946;
+  margin-bottom: 5px;
+}
+
+.word-card .type {
+  font-style: italic;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.word-card .definition {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* Footer Styling */
+.footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #1d3557;
+  color: white;
+  margin-top: auto; /* Đẩy footer xuống đáy trang */
+}
+/* =========================================
+   RESPONSIVE DESIGN CHO ĐIỆN THOẠI & TABLET
+   ========================================= */
+
+@media (max-width: 768px) {
+  /* Điều chỉnh thanh Header: Xếp Logo và Menu theo chiều dọc */
+  .header {
+    flex-direction: column;
+    padding: 15px 20px;
+    gap: 15px; /* Tạo khoảng cách giữa Logo và Menu */
+  }
+
+  .nav-links a {
+    margin: 0 10px; /* Thu hẹp khoảng cách giữa các link */
+    font-size: 14px;
+  }
+
+  /* Điều chỉnh khu vực Tìm kiếm: Giảm kích thước chữ và khoảng cách */
+  .search-section {
+    padding: 40px 15px;
+  }
+
+  .search-section h1 {
+    font-size: 26px; /* Chữ nhỏ lại cho vừa màn hình */
+  }
+
+  .search-section p {
+    font-size: 14px;
+  }
+
+  /* Điều chỉnh ô nhập liệu và nút bấm */
+  .search-input {
+    padding: 12px 15px;
+    font-size: 16px;
+  }
+
+  .search-button {
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+
+  /* Điều chỉnh khu vực Từ của ngày */
+  .word-of-day {
+    padding: 30px 15px;
+  }
+
+  .word-card {
+    padding: 20px;
+  }
+
+  .word-card h3 {
+    font-size: 24px;
+  }
+
+  .word-card .definition {
+    font-size: 16px;
+  }
+}
