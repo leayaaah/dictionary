@@ -1,18 +1,19 @@
-.word-of-day-container {
+/* .word-of-day-container {
   max-width: 800px;
   margin: 20px auto;
   padding: 0 20px;
-}
+} */
+
 
 .word-of-day-title {
   text-align: center;
-  margin-bottom: 15px;
+  padding: 20px;
+  background: rgba(13, 13, 51, 0.5)
 }
 
 .word-card {
   background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
   padding: 25px;
-  border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
 }

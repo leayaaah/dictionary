@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import Words from './components/Words';
 import WordOfTheDay from './components/WordOfTheDay';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Header = () => {
   return (
@@ -12,6 +13,9 @@ const Header = () => {
         <a href="#features">Tính năng</a>
         <a href="#about">Về chúng tôi</a>
       </nav>
+      <div className="logo">
+        <a href="#login">Đăng nhập</a>
+      </div>
     </header>
   );
 };
@@ -33,14 +37,14 @@ const SearchSection = ({ onSearch, onClear }) => {
 
   return (
     <section className="search-section">
-      <h1>Khám phá ngôn ngữ của bạn</h1>
-      <p>Nhập một từ để tra cứu định nghĩa, từ đồng nghĩa và cách phát âm.</p>
+      <h1>Chào mừng bạn đến với Từ điển trực tuyến S'tiêng</h1>
+      {/* <p>Nhập một từ để tra cứu định nghĩa, từ đồng nghĩa và cách phát âm.</p> */}
       
       <form onSubmit={handleSearch} className="search-form">
         <input 
           type="text" 
           className="search-input"
-          placeholder="Bạn muốn tra từ gì? (Anh hoặc Việt)..." 
+          placeholder="Bạn muốn tra từ gì?" 
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
@@ -51,37 +55,43 @@ const SearchSection = ({ onSearch, onClear }) => {
           </button>
         )}
       </form>
+
     </section>
   );
 };
 
 function App() {
-  // State lưu trữ từ khóa người dùng đang tìm
   const [searchKeyword, setSearchKeyword] = useState('');
 
   const handleSearchWord = (word) => {
-    setSearchKeyword(word); // Lưu từ khóa vào state
+    setSearchKeyword(word); 
   };
 
   const handleClearSearch = () => {
-    setSearchKeyword(''); // Reset từ khóa về rỗng
+    setSearchKeyword(''); 
   };
 
   return (
-    <div className="app-container">
-      <Header />
-      <main>
-        {/* Truyền hàm xử lý tìm kiếm và xóa vào SearchSection */}
-        <SearchSection onSearch={handleSearchWord} onClear={handleClearSearch} />
+    <div>
+      <section className="hero">
+        <div className="overlay"></div>
+
+        <div className="hero-content">
+          <Header />
+          <SearchSection 
+            onSearch={handleSearchWord} 
+            onClear={handleClearSearch} 
+          />
+
+        </div>
         
-        {/* Chỉ hiển thị Từ của ngày nếu KHÔNG CÓ từ khóa tìm kiếm */}
-        {!searchKeyword && <WordOfTheDay />}
-        
-        {/* Truyền từ khóa xuống component Words để lọc dữ liệu */}
-        <Words searchKeyword={searchKeyword} />
-      </main>
+      </section>
+
+      {!searchKeyword && <WordOfTheDay />}
+      <Words searchKeyword={searchKeyword} />
+
       <footer className="footer">
-        <p>&copy; 2026 MyDictionary. Bản quyền thuộc về bạn.</p>
+        <p>&copy; 2026 THUYLY - A 20 years old person.</p>
       </footer>
     </div>
   );

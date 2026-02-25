@@ -1,4 +1,3 @@
-/* Reset CSS cơ bản */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -8,60 +7,96 @@
 
 body {
   background-color: #f9f9f9;
+  
   color: #333;
 }
 
-.app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+.hero {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  background-image: url('/img/bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
 }
 
-/* Header Styling */
+.hero .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 13, 51, 0.5);
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center;  */
+  text-align: center;
+}
+.nav-links {
+  display: flex;
+  justify-content: center;
+}
+
 .header {
+  background: transparent;
+  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px 50px;
   background-color: #ffffff;
-  border-bottom: 1px solid #eaeaea;
+  background: transparent;
+  /* border-bottom: 1px solid #eaeaea; */
 }
 
 .logo {
   font-size: 24px;
   font-weight: bold;
-  color: #e63946; /* Màu đỏ làm điểm nhấn */
+  color: #e63946; 
 }
 
 .nav-links a {
   margin-left: 20px;
   text-decoration: none;
-  color: #555;
+  color: white;
   font-weight: 500;
+}
+.logo a{
+  margin-left: 20px;
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: #e63946; 
 }
 
 .nav-links a:hover {
   color: #e63946;
 }
 
-/* Search Section Styling */
+
 .search-section {
+  /* margin-top: 100px; */
   text-align: center;
   padding: 80px 20px;
-  background-color: #1d3557; /* Nền xanh đậm giống phong cách từ điển */
   color: white;
 }
 
 .search-section h1 {
   font-size: 36px;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
-.search-section p {
+/* .search-section p {
   font-size: 16px;
   margin-bottom: 30px;
-  color: #a8b2d1;
-}
+  color: white;
+} */
 
 .search-form {
   display: flex;
@@ -155,32 +190,29 @@ body {
    ========================================= */
 
 @media (max-width: 768px) {
-  /* Điều chỉnh thanh Header: Xếp Logo và Menu theo chiều dọc */
   .header {
     flex-direction: column;
     padding: 15px 20px;
-    gap: 15px; /* Tạo khoảng cách giữa Logo và Menu */
+    gap: 15px; 
   }
 
   .nav-links a {
-    margin: 0 10px; /* Thu hẹp khoảng cách giữa các link */
+    margin: 0 10px; 
     font-size: 14px;
   }
 
-  /* Điều chỉnh khu vực Tìm kiếm: Giảm kích thước chữ và khoảng cách */
   .search-section {
     padding: 40px 15px;
   }
 
   .search-section h1 {
-    font-size: 26px; /* Chữ nhỏ lại cho vừa màn hình */
+    font-size: 26px;
   }
 
   .search-section p {
     font-size: 14px;
   }
 
-  /* Điều chỉnh ô nhập liệu và nút bấm */
   .search-input {
     padding: 12px 15px;
     font-size: 16px;

@@ -58,9 +58,10 @@
 
 .word-example {
   color: #555;
+  border-left: none !important; 
+  margin: 0 !important; 
 }
 
-/* Phân trang */
 .pagination-container {
   display: flex;
   justify-content: center;
