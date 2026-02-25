@@ -1,10 +1,16 @@
+// src/App.jsx
 import React, { useState } from 'react';
 import './App.css';
 import Words from './components/Words';
 import WordOfTheDay from './components/WordOfTheDay';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
-const Header = () => {
+// MỚI: Nhập Component LoginModal vừa tách ra
+import LoginModal from './components/LoginModal'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './components/LoginModal.css'
+
+// 1. Component Header
+const Header = ({ onOpenLogin }) => {
   return (
     <header className="header">
       <div className="logo">MyDictionary</div>
@@ -14,12 +20,21 @@ const Header = () => {
         <a href="#about">Về chúng tôi</a>
       </nav>
       <div className="logo">
-        <a href="#login">Đăng nhập</a>
+        <a 
+          href="#login" 
+          onClick={(e) => {
+            e.preventDefault(); 
+            onOpenLogin();      
+          }}
+        >
+          Đăng nhập
+        </a>
       </div>
     </header>
   );
 };
 
+// 2. Component SearchSection
 const SearchSection = ({ onSearch, onClear }) => {
   const [keyword, setKeyword] = useState('');
 
@@ -32,14 +47,12 @@ const SearchSection = ({ onSearch, onClear }) => {
 
   const handleClear = () => {
     setKeyword('');
-    onClear(); // Gọi hàm xóa kết quả tìm kiếm ở App
+    onClear();
   };
 
   return (
     <section className="search-section">
       <h1>Chào mừng bạn đến với Từ điển trực tuyến S'tiêng</h1>
-      {/* <p>Nhập một từ để tra cứu định nghĩa, từ đồng nghĩa và cách phát âm.</p> */}
-      
       <form onSubmit={handleSearch} className="search-form">
         <input 
           type="text" 
@@ -50,48 +63,54 @@ const SearchSection = ({ onSearch, onClear }) => {
         />
         <button type="submit" className="search-button">Tra Cứu</button>
         {keyword && (
-          <button type="button" className="clear-button" onClick={handleClear} >
-            Xóa
-          </button>
+          <button type="button" className="clear-button" onClick={handleClear}>Xóa</button>
         )}
       </form>
-
     </section>
   );
 };
 
+// 3. Component App Chính
 function App() {
   const [searchKeyword, setSearchKeyword] = useState('');
+  
+  // State quản lý đóng/mở Modal vẫn phải nằm ở App 
+  // để truyền xuống Header (nút mở) và LoginModal (nội dung)
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
-  const handleSearchWord = (word) => {
-    setSearchKeyword(word); 
-  };
-
-  const handleClearSearch = () => {
-    setSearchKeyword(''); 
-  };
+  const handleSearchWord = (word) => setSearchKeyword(word);
+  const handleClearSearch = () => setSearchKeyword('');
 
   return (
     <div>
-      <section className="hero">
+      <section id="home" className="hero">
         <div className="overlay"></div>
-
         <div className="hero-content">
-          <Header />
-          <SearchSection 
-            onSearch={handleSearchWord} 
-            onClear={handleClearSearch} 
-          />
-
+          <Header onOpenLogin={() => setShowLoginModal(true)} />
+          <SearchSection onSearch={handleSearchWord} onClear={handleClearSearch} />
         </div>
-        
       </section>
 
-      {!searchKeyword && <WordOfTheDay />}
-      <Words searchKeyword={searchKeyword} />
+      <section id="features" style={{ padding: '40px 20px' }}>
+        {!searchKeyword && <WordOfTheDay />}
+        <Words searchKeyword={searchKeyword} />
+      </section>
 
-      <footer className="footer">
-        <p>&copy; 2026 THUYLY - A 20 years old person.</p>
+      <section id="about" style={{ padding: '60px 20px', backgroundColor: '#f9f9f9', textAlign: 'center' }}>
+        <h2>Về chúng tôi</h2>
+        <p style={{ maxWidth: '600px', margin: '0 auto', color: '#555' }}>
+          Dự án từ điển trực tuyến nhằm bảo tồn và phát triển tiếng S'tiêng.
+        </p>
+      </section>
+
+      {/* Gọi Component LoginModal ở đây */}
+      <LoginModal 
+        show={showLoginModal} 
+        onClose={() => setShowLoginModal(false)} 
+      />
+
+      <footer className="footer text-center py-3 bg-dark text-white">
+        <p className="mb-0">&copy; 2026 THUYLY - A 20 years old person.</p>
       </footer>
     </div>
   );
