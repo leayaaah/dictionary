@@ -1,4 +1,4 @@
-export async function login(client, username, password) {
+export async function signIn(client, username, password) {
   const { data, error } = await client
     .from('Accounts')
     // Never return the password to the browser or persist it in localStorage.
@@ -10,3 +10,5 @@ export async function login(client, username, password) {
   if (error) throw error;
   return data;
 }
+
+export const login = signIn;

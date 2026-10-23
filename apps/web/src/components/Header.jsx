@@ -13,7 +13,7 @@ function Header({ onOpenLogin, currentUser, onLogout }) {
       <div className="header-account">
         {currentUser ? (
           <>
-            <span className="header-user">Xin chào, {currentUser.name || currentUser.email}</span>
+            <span className="header-user">Xin chào, {currentUser.name || currentUser.username || currentUser.email}</span>
             <button type="button" className="header-action" onClick={onLogout}>Đăng xuất</button>
           </>
         ) : (

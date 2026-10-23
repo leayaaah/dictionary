@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { login } from '../services/authService';
+import { useEffect, useRef, useState } from 'react';
+import { signIn } from '../services/authService';
 import RegisterForm from './RegisterForm';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,16 +12,35 @@ function LoginModal({ show, onClose, onLoginSuccess }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const usernameInputRef = useRef(null);
+
+  useEffect(() => {
+    if (!show) return undefined;
+
+    usernameInputRef.current?.focus();
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && !isLoading) onClose();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [show, isLoading, onClose]);
 
   if (!show) return null;
 
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
+    const normalizedUsername = username.trim();
+    if (!normalizedUsername || !password) {
+      setErrorMessage('Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.');
+      return;
+    }
+
     setErrorMessage('');
     setIsLoading(true);
 
     try {
-      const account = await login(username.trim(), password);
+      const account = await signIn(normalizedUsername, password);
       if (!account) {
         setErrorMessage('Tên đăng nhập hoặc mật khẩu không chính xác.');
         return;
@@ -39,32 +58,47 @@ function LoginModal({ show, onClose, onLoginSuccess }) {
     }
   };
 
+  const handleClose = () => {
+    if (isLoading) return;
+    setErrorMessage('');
+    setIsRegistering(false);
+    onClose();
+  };
+
   return (
-    <div className="modal fade login10-modal show d-block" tabIndex="-1" role="dialog" aria-modal="true" aria-labelledby="login-modal-title" style={{ backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1050 }}>
-      <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: '420px' }}>
+    <div className="login10-modal" tabIndex="-1" role="dialog" aria-modal="true" aria-labelledby="login-modal-title" onMouseDown={(event) => event.target === event.currentTarget && handleClose()}>
+      <div className="login10-dialog">
         <div className="modal-content login10-card">
-          <button type="button" className="btn-close login10-close position-absolute top-0 end-0 m-3" onClick={onClose} aria-label="Đóng" />
-          <div className="login10-body p-4">
+          <button type="button" className="login10-close" onClick={handleClose} aria-label="Đóng" disabled={isLoading}>×</button>
+          <div className="login10-body">
             {isRegistering ? (
-              <RegisterForm onShowLogin={() => setIsRegistering(false)} onClose={onClose} />
+              <RegisterForm onShowLogin={() => setIsRegistering(false)} />
             ) : (
               <>
-                <h3 id="login-modal-title" className="mb-4 text-center">Đăng nhập</h3>
+                <div className="login10-heading">
+                  <span className="login10-mark" aria-hidden="true">⌁</span>
+                  <p className="login10-eyebrow">TỪ ĐIỂN S'TIÊNG</p>
+                  <h2 id="login-modal-title">Chào mừng trở lại</h2>
+                  <p className="login10-subtitle">Đăng nhập để tiếp tục hành trình khám phá ngôn ngữ.</p>
+                </div>
                 <form onSubmit={handleLoginSubmit} className="signin-form">
-                  <div className="mb-3">
-                    <input type="text" className="form-control login10-control" placeholder="Tên đăng nhập" aria-label="Tên đăng nhập" autoComplete="username" value={username} onChange={(event) => setUsername(event.target.value)} required disabled={isLoading} />
+                  <div className="login10-field">
+                    <label htmlFor="login10-username">Tên đăng nhập</label>
+                    <input ref={usernameInputRef} id="login10-username" type="text" className="login10-control" placeholder="Nhập tên đăng nhập" autoComplete="username" value={username} onChange={(event) => setUsername(event.target.value)} required disabled={isLoading} />
                   </div>
-                  <div className="mb-3 login10-password-wrap position-relative">
-                    <input id="login10-password" type={showPassword ? 'text' : 'password'} className="form-control login10-control" placeholder="Mật khẩu" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} required disabled={isLoading} />
-                    <button className="login10-toggle btn border-0 position-absolute top-50 end-0 translate-middle-y me-2" type="button" aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'} aria-pressed={showPassword} onClick={() => setShowPassword((visible) => !visible)}>
-                      <span className={`fa fa-fw ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`} />
+                  <div className="login10-field login10-password-wrap">
+                    <label htmlFor="login10-password">Mật khẩu</label>
+                    <input id="login10-password" type={showPassword ? 'text' : 'password'} className="login10-control" placeholder="Nhập mật khẩu" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} required disabled={isLoading} />
+                    <button className="login10-toggle" type="button" aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'} aria-pressed={showPassword} onClick={() => setShowPassword((visible) => !visible)} disabled={isLoading}>
+                      {showPassword ? 'Ẩn' : 'Hiện'}
                     </button>
                   </div>
-                  {errorMessage && <div className="text-danger text-center mb-3" role="alert">{errorMessage}</div>}
-                  <button type="submit" className="btn btn-primary w-100 login10-submit py-2 mb-3" disabled={isLoading}>{isLoading ? 'Đang kiểm tra...' : 'Đăng nhập'}</button>
+                  {errorMessage && <div className="login10-message login10-error" role="alert">{errorMessage}</div>}
+                  <button type="submit" className="login10-submit" disabled={isLoading}>{isLoading ? 'Đang xác thực...' : 'Đăng nhập'}</button>
                 </form>
-                <div className="text-center">
-                  <button type="button" className="btn btn-link login10-link" onClick={() => setIsRegistering(true)}>Chưa có tài khoản? Đăng ký</button>
+                <div className="login10-footer">
+                  <span>Chưa có tài khoản?</span>
+                  <button type="button" className="login10-link" onClick={() => { setErrorMessage(''); setIsRegistering(true); }}>Đăng ký ngay</button>
                 </div>
               </>
             )}

@@ -21,4 +21,5 @@ export function getWordsPage(
   options: { page: number; pageSize: number; searchKeyword?: string },
 ): Promise<{ words: Word[]; totalPages: number }>;
 export function getRandomWord(client: SupabaseClient): Promise<Word | null>;
+export function signIn(client: SupabaseClient, username: string, password: string): Promise<Account | null>;
 export function login(client: SupabaseClient, username: string, password: string): Promise<Account | null>;
