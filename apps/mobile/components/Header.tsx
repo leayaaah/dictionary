@@ -1,0 +1,34 @@
+import { Pressable, Text, View } from 'react-native';
+import type { AuthUser } from '../types';
+import { styles } from '../theme';
+
+interface HeaderProps {
+  user: AuthUser | null;
+  onProfile: () => void;
+  onLogin: () => void;
+  onLogout: () => void;
+}
+
+export default function Header({ user, onProfile, onLogin, onLogout }: HeaderProps) {
+  const fullName = user?.user_metadata?.full_name;
+  const displayName = typeof fullName === 'string' && fullName ? fullName : user?.email;
+
+  return (
+    <View style={styles.header}>
+      <View>
+        <Text style={styles.brand}>S&apos;TIÊNG</Text>
+        <Text style={styles.brandSub}>TỪ ĐIỂN TRỰC TUYẾN</Text>
+      </View>
+      {user ? (
+        <View style={styles.headerActions}>
+          <Pressable onPress={onProfile} style={styles.avatar} accessibilityLabel={`Hồ sơ ${displayName || ''}`}>
+            <Text style={styles.avatarText}>{(displayName || 'U')[0].toUpperCase()}</Text>
+          </Pressable>
+          <Pressable onPress={onLogout}><Text style={styles.headerLink}>Đăng xuất</Text></Pressable>
+        </View>
+      ) : (
+        <Pressable onPress={onLogin}><Text style={styles.headerLink}>Đăng nhập</Text></Pressable>
+      )}
+    </View>
+  );
+}

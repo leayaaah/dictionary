@@ -1,3 +1,5 @@
+import 'react-native-url-polyfill/auto';
+import { AppState, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createDictionaryClient } from '@dictionary/shared';
 
@@ -12,3 +14,16 @@ export const supabase = createDictionaryClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: false,
   },
 });
+
+if (Platform.OS !== 'web') {
+  const refreshForAppState = (state) => {
+    if (state === 'active') {
+      supabase.auth.startAutoRefresh();
+    } else {
+      supabase.auth.stopAutoRefresh();
+    }
+  };
+
+  AppState.addEventListener('change', refreshForAppState);
+  refreshForAppState(AppState.currentState);
+}

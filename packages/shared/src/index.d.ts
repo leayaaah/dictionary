@@ -1,7 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+export type { AuthChangeEvent, AuthResponse, Session } from '@supabase/supabase-js';
 
 export interface Word {
-  id: string;
+  id: number;
   word_st: string;
   word_vi: string;
   pos?: string | null;
