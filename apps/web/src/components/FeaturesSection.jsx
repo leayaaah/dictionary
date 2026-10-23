@@ -1,11 +1,11 @@
-import Words from './Words';
+import GetWordsPage from './GetWordsPage';
 import WordOfTheDay from './WordOfTheDay';
 
 function FeaturesSection({ searchKeyword }) {
   return (
     <section id="features" className="features-section">
       {!searchKeyword && <WordOfTheDay />}
-      <Words searchKeyword={searchKeyword} />
+      <GetWordsPage searchKeyword={searchKeyword} />
     </section>
   );
 }

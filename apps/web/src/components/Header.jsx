@@ -1,6 +1,7 @@
 import { memo } from 'react';
+import './Header.css';
 
-function Header({ onOpenLogin, currentUser, onLogout }) {
+function Header({ onOpenLogin, currentUser, isAuthInitializing, onLogout }) {
   return (
     <header className="header">
       <div className="logo"><a href="#home">Từ điển S'tiêng</a></div>
@@ -10,9 +11,11 @@ function Header({ onOpenLogin, currentUser, onLogout }) {
         <a href="#about">Về chúng tôi</a>
       </nav>
       <div className="header-account">
-        {currentUser ? (
+        {isAuthInitializing ? (
+          <span className="header-user" aria-live="polite">Đang khôi phục phiên...</span>
+        ) : currentUser ? (
           <>
-            <span className="header-user">Xin chào, {currentUser.name || currentUser.email}</span>
+            <span className="header-user">Xin chào, {currentUser.full_name || currentUser.user_metadata?.full_name || currentUser.email || currentUser.name || currentUser.username}</span>
             <button type="button" className="header-action" onClick={onLogout}>Đăng xuất</button>
           </>
         ) : (
