@@ -5,7 +5,7 @@ import './Words.css';
 const ITEMS_PER_PAGE = 10;
 
 // Nhận thêm searchKeyword từ component App truyền xuống
-const Words = ({ searchKeyword }) => {
+function GetWordsPage({ searchKeyword }) {
   const [words, setWords] = useState([]);
   const [loading, setLoading] = useState(false); // Đổi mặc định thành false để tránh chớp nhoáng
   const [page, setPage] = useState(1);
@@ -118,6 +118,6 @@ const Words = ({ searchKeyword }) => {
       )}
     </section>
   );
-};
+}
 
-export default Words;
+export default GetWordsPage;

@@ -1,11 +1,9 @@
-import { supabase } from '../lib/supabaseClient';
-
 const WORDS_TABLE = 'Words';
 
-export async function getWordsPage({ page, pageSize, searchKeyword = '' }) {
+export async function getWordsPage(client, { page, pageSize, searchKeyword = '' }) {
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
-  let query = supabase
+  let query = client
     .from(WORDS_TABLE)
     .select('*', { count: 'exact' })
     .order('id', { ascending: false })
@@ -20,8 +18,8 @@ export async function getWordsPage({ page, pageSize, searchKeyword = '' }) {
   return { words: data || [], totalPages: Math.ceil((count || 0) / pageSize) };
 }
 
-export async function getRandomWord() {
-  const { count, error: countError } = await supabase
+export async function getRandomWord(client) {
+  const { count, error: countError } = await client
     .from(WORDS_TABLE)
     .select('*', { count: 'exact', head: true });
 
@@ -29,7 +27,7 @@ export async function getRandomWord() {
   if (!count) return null;
 
   const randomIndex = Math.floor(Math.random() * count);
-  const { data, error } = await supabase
+  const { data, error } = await client
     .from(WORDS_TABLE)
     .select('*')
     .range(randomIndex, randomIndex)

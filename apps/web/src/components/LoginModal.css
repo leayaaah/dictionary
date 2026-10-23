@@ -1,5 +1,21 @@
+/* Đảm bảo modal luôn phủ kín màn hình và căn giữa tuyệt đối */
+.login10-modal {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+
 /* Modal look giống template (tối + blur nhẹ) */
-.login10-modal .modal-dialog { padding: 12px; }
+.login10-modal .modal-dialog { 
+  padding: 12px; 
+  margin: auto; /* Giúp căn giữa chuẩn trong flexbox */
+}
 
 .login10-card{
   position: relative;

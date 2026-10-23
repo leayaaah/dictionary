@@ -1,0 +1,25 @@
+{
+  "name": "@dictionary/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./wordService": {
+      "types": "./src/wordService.d.ts",
+      "import": "./src/wordService.js"
+    },
+    "./authService": {
+      "types": "./src/authService.d.ts",
+      "import": "./src/authService.js"
+    }
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.97.0"
+  }
+}

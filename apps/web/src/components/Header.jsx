@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import './Header.css';
 
 function Header({ onOpenLogin, currentUser, onLogout }) {
   return (
