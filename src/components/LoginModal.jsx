@@ -1,6 +1,6 @@
 // src/components/LoginModal.jsx
 import React, { useState } from 'react';
-import { supabase } from '../supabaseClient'; 
+import { login } from '../services/authService'; 
 
 const LoginModal = ({ show, onClose, onLoginSuccess }) => {
   // Các state quản lý form và trạng thái
@@ -20,16 +20,8 @@ const LoginModal = ({ show, onClose, onLoginSuccess }) => {
     setIsLoading(true);  // Bật trạng thái đang tải
 
     try {
-      // 1. Truy vấn Supabase bảng Accounts
-      const { data, error } = await supabase
-        .from('Accounts')
-        .select('*')
-        .eq('username', username)
-        .eq('password', password)
-        .single(); // Tìm dòng duy nhất khớp cả username và password
-
-      // 2. Kiểm tra kết quả trả về
-      if (error || !data) {
+      const data = await login(username, password);
+      if (!data) {
         // Sai tài khoản hoặc mật khẩu
         setErrorMessage('Tên đăng nhập hoặc mật khẩu không chính xác!');
       } else {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getWordsPage } from '../services/wordService';
 import './Words.css'; 
 
 const ITEMS_PER_PAGE = 10;
@@ -25,31 +25,9 @@ const Words = ({ searchKeyword }) => {
     try {
       setLoading(true);
       
-      const from = (page - 1) * ITEMS_PER_PAGE;
-      const to = from + ITEMS_PER_PAGE - 1;
-
-      // Xây dựng câu lệnh Query cơ bản
-      let query = supabase
-        .from('Words')
-        .select('*', { count: 'exact' })
-        .order('id', { ascending: false })
-        .range(from, to);
-
-      // Nếu có từ khóa tìm kiếm, thêm điều kiện lọc vào Query
-      if (searchKeyword) {
-        // Tìm kiếm chuỗi (không phân biệt hoa/thường) trong cột word_st HOẶC cột word_vi
-        query = query.or(`word_st.ilike.%${searchKeyword}%,word_vi.ilike.%${searchKeyword}%`);
-      }
-
-      // Thực thi Query
-      const { data, count, error } = await query;
-
-      if (error) throw error;
-      
-      if (data) {
-        setWords(data);
-        setTotalPages(Math.ceil(count / ITEMS_PER_PAGE));
-      }
+      const result = await getWordsPage({ page, pageSize: ITEMS_PER_PAGE, searchKeyword });
+      setWords(result.words);
+      setTotalPages(result.totalPages);
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu: ", error.message);
     } finally {

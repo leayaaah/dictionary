@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
+import { getRandomWord } from '../services/wordService';
 import './WordOfTheDay.css'; // Import file CSS vào đây
 
 const WordOfTheDay = () => {
@@ -14,27 +14,8 @@ const WordOfTheDay = () => {
     try {
       setLoading(true);
       
-      // 1. Lấy tổng số lượng từ hiện có
-      const { count, error: countError } = await supabase
-        .from('Words')
-        .select('*', { count: 'exact', head: true });
-
-      if (countError) throw countError;
-
-      if (count > 0) {
-        // 2. Tạo một số ngẫu nhiên
-        const randomIndex = Math.floor(Math.random() * count);
-
-        // 3. Lấy 1 từ tại vị trí ngẫu nhiên
-        const { data, error: dataError } = await supabase
-          .from('Words')
-          .select('*')
-          .range(randomIndex, randomIndex)
-          .single();
-
-        if (dataError) throw dataError;
-        if (data) setWordOfDay(data);
-      }
+      const word = await getRandomWord();
+      setWordOfDay(word);
     } catch (error) {
       console.error("Lỗi khi lấy từ ngẫu nhiên: ", error.message);
     } finally {

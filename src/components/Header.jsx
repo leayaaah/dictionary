@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo } from 'react';
 
 function Header({ onOpenLogin, currentUser, onLogout }) {
   return (
@@ -23,4 +23,4 @@ function Header({ onOpenLogin, currentUser, onLogout }) {
   );
 }
 
-export default Header;
+export default memo(Header);
