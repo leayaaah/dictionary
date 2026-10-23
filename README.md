@@ -16,7 +16,7 @@ Install pnpm, then install all workspace dependencies from the repository root:
 pnpm install
 ```
 
-Create `apps/web/.env` from `apps/web/.env.example` and `apps/mobile/.env` from `apps/mobile/.env.example`. Set the Supabase URL and anon key in each file.
+Create `apps/web/.env` from `apps/web/.env.example` and `apps/mobile/.env` from `apps/mobile/.env.example`. Set the Supabase URL and anon key in each file. Expo reads the mobile values from `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
 
 ## Run
 
