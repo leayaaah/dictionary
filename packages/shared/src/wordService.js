@@ -1,17 +1,29 @@
 const WORDS_TABLE = 'Words';
+const SEARCHABLE_COLUMNS = ['word_st', 'word_vi', 'meaning', 'example', 'pos'];
+
+function getSearchKeywords(searchKeyword) {
+  return searchKeyword
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+}
 
 export async function getWordsPage(client, { page, pageSize, searchKeyword = '' }) {
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
   let query = client
     .from(WORDS_TABLE)
-    .select('*', { count: 'exact' })
-    .order('id', { ascending: false })
-    .range(from, to);
+    .select('*', { count: 'exact' });
 
-  if (searchKeyword) {
-    query = query.or(`word_st.ilike.%${searchKeyword}%,word_vi.ilike.%${searchKeyword}%`);
+  const keywords = getSearchKeywords(searchKeyword);
+  for (const keyword of keywords) {
+    const relatedColumns = SEARCHABLE_COLUMNS
+      .map((column) => `${column}.ilike.%${keyword}%`)
+      .join(',');
+    query = query.or(relatedColumns);
   }
+
+  query = query.order('id', { ascending: false }).range(from, to);
 
   const { data, count, error } = await query;
   if (error) throw error;
