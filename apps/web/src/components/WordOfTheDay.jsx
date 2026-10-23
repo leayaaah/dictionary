@@ -14,16 +14,6 @@ const WordOfTheDay = () => {
   const [wordOfDay, setWordOfDay] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadWordOfDay();
-
-    const now = new Date();
-    const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const midnightTimer = window.setTimeout(loadWordOfDay, nextDay.getTime() - now.getTime());
-
-    return () => window.clearTimeout(midnightTimer);
-  }, []);
-
   const loadWordOfDay = async () => {
     try {
       setLoading(true);
@@ -58,6 +48,18 @@ const WordOfTheDay = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // Loading is initialized before the first asynchronous fetch.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadWordOfDay();
+
+    const now = new Date();
+    const nextDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const midnightTimer = window.setTimeout(loadWordOfDay, nextDay.getTime() - now.getTime());
+
+    return () => window.clearTimeout(midnightTimer);
+  }, []);
 
   if (loading) {
     return (

@@ -17,6 +17,10 @@
     "./authService": {
       "types": "./src/authService.d.ts",
       "import": "./src/authService.js"
+    },
+    "./profileService": {
+      "types": "./src/profileService.d.ts",
+      "import": "./src/profileService.js"
     }
   },
   "dependencies": {

@@ -1,37 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { getWordsPage } from '../services/wordService';
+import { addFavorite, getFavoriteIds, removeFavorite } from '../services/profileService';
 import './Words.css'; 
 
 const ITEMS_PER_PAGE = 10;
 
 // Nhận thêm searchKeyword từ component App truyền xuống
-function GetWordsPage({ searchKeyword }) {
+function GetWordsPage({ searchKeyword, currentUser }) {
   const [words, setWords] = useState([]);
-  const [loading, setLoading] = useState(false); // Đổi mặc định thành false để tránh chớp nhoáng
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [favoriteIds, setFavoriteIds] = useState(new Set());
 
-  // Khi từ khóa tìm kiếm thay đổi, luôn quay về trang 1
   useEffect(() => {
-    setPage(1);
-  }, [searchKeyword]);
-
-  // Lấy dữ liệu khi đổi trang hoặc khi từ khóa tìm kiếm thay đổi
-  useEffect(() => {
-    fetchWords();
+    let isMounted = true;
+    getWordsPage({ page, pageSize: ITEMS_PER_PAGE, searchKeyword })
+      .then((result) => {
+        if (!isMounted) return;
+        setWords(result.words);
+        setTotalPages(result.totalPages);
+      })
+      .catch((error) => console.error('Lỗi khi lấy dữ liệu:', error.message))
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+    return () => { isMounted = false; };
   }, [page, searchKeyword]);
 
-  async function fetchWords() {
+  useEffect(() => {
+    if (!currentUser || !words.length) return;
+    getFavoriteIds(words.map((word) => word.id))
+      .then(setFavoriteIds)
+      .catch((error) => console.error('Không thể tải từ yêu thích:', error));
+  }, [currentUser, words]);
+
+  async function toggleFavorite(wordId) {
     try {
-      setLoading(true);
-      
-      const result = await getWordsPage({ page, pageSize: ITEMS_PER_PAGE, searchKeyword });
-      setWords(result.words);
-      setTotalPages(result.totalPages);
+      if (favoriteIds.has(wordId)) {
+        await removeFavorite(wordId);
+        setFavoriteIds((ids) => new Set([...ids].filter((id) => id !== wordId)));
+      } else {
+        await addFavorite(wordId);
+        setFavoriteIds((ids) => new Set(ids).add(wordId));
+      }
     } catch (error) {
-      console.error("Lỗi khi lấy dữ liệu: ", error.message);
-    } finally {
-      setLoading(false);
+      console.error('Không thể cập nhật từ yêu thích:', error);
     }
   }
 
@@ -63,12 +77,13 @@ function GetWordsPage({ searchKeyword }) {
                   <th>Tiếng Việt</th>
                   <th>Ý nghĩa</th>
                   <th>Ví dụ</th>
+                  {currentUser && <th aria-label="Yêu thích">☆</th>}
                 </tr>
               </thead>
               <tbody>
                 {words.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="empty-message">
+                    <td colSpan={currentUser ? 6 : 5} className="empty-message">
                       {searchKeyword 
                         ? "Không tìm thấy từ nào phù hợp với từ khóa của bạn." 
                         : "Chưa có từ vựng nào trong cơ sở dữ liệu."}
@@ -84,6 +99,18 @@ function GetWordsPage({ searchKeyword }) {
                       <td className="word-example">
                         {item.example ? `"${item.example}"` : ''}
                       </td>
+                      {currentUser && (
+                        <td>
+                          <button
+                            type="button"
+                            className={`favorite-button ${favoriteIds.has(item.id) ? 'is-favorite' : ''}`}
+                            onClick={() => toggleFavorite(item.id)}
+                            aria-label={favoriteIds.has(item.id) ? 'Bỏ yêu thích' : 'Thêm vào yêu thích'}
+                          >
+                            {favoriteIds.has(item.id) ? '★' : '☆'}
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))
                 )}
