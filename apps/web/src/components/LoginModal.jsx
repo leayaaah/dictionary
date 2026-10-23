@@ -5,7 +5,7 @@ import RegisterForm from './RegisterForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './LoginModal.css';
 
-function LoginModal({ show, onClose, onLoginSuccess }) {
+function LoginModal({ show, onClose }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -40,13 +40,12 @@ function LoginModal({ show, onClose, onLoginSuccess }) {
     setIsLoading(true);
 
     try {
-      const account = await signIn(normalizedEmail, password);
-      if (!account) {
+      const user = await signIn(normalizedEmail, password);
+      if (!user) {
         setErrorMessage('Tên đăng nhập hoặc mật khẩu không chính xác.');
         return;
       }
 
-      onLoginSuccess(account);
       setEmail('');
       setPassword('');
       onClose();

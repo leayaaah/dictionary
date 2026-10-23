@@ -23,3 +23,9 @@ export function signUp(
   client: SupabaseClient,
   details: { fullName: string; email: string; password: string },
 ): Promise<import('@supabase/supabase-js').AuthResponse['data']>;
+export function getSession(client: SupabaseClient): Promise<import('@supabase/supabase-js').Session | null>;
+export function signOut(client: SupabaseClient): Promise<void>;
+export function onAuthStateChange(
+  client: SupabaseClient,
+  callback: (event: import('@supabase/supabase-js').AuthChangeEvent, session: import('@supabase/supabase-js').Session | null) => void,
+): ReturnType<SupabaseClient['auth']['onAuthStateChange']>['data']['subscription'];

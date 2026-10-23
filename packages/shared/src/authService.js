@@ -10,6 +10,21 @@ export async function signIn(client, email, password) {
 
 export const login = signIn;
 
+export async function getSession(client) {
+  const { data, error } = await client.auth.getSession();
+  if (error) throw error;
+  return data.session;
+}
+
+export async function signOut(client) {
+  const { error } = await client.auth.signOut();
+  if (error) throw error;
+}
+
+export function onAuthStateChange(client, callback) {
+  return client.auth.onAuthStateChange(callback).data.subscription;
+}
+
 export async function signUp(client, { fullName, email, password }) {
   const { data, error } = await client.auth.signUp({
     email: email.trim(),
