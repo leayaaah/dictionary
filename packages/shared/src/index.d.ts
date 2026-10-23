@@ -19,3 +19,7 @@ export function getWordsPage(
 export function getRandomWord(client: SupabaseClient): Promise<Word | null>;
 export function signIn(client: SupabaseClient, email: string, password: string): Promise<Account>;
 export function login(client: SupabaseClient, email: string, password: string): Promise<Account>;
+export function signUp(
+  client: SupabaseClient,
+  details: { fullName: string; email: string; password: string },
+): Promise<import('@supabase/supabase-js').AuthResponse['data']>;

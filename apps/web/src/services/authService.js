@@ -1,16 +1,7 @@
-import { signIn as signInWithClient } from '@dictionary/shared/authService';
+import { signIn as signInWithClient, signUp as signUpWithClient } from '@dictionary/shared/authService';
 import { supabase } from '../lib/supabaseClient';
 
 export const signIn = (email, password) => signInWithClient(supabase, email, password);
 export const login = signIn;
 
-export async function signUp({ fullName, email, password }) {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: { data: { full_name: fullName } },
-  });
-
-  if (error) throw error;
-  return data;
-}
+export const signUp = (details) => signUpWithClient(supabase, details);

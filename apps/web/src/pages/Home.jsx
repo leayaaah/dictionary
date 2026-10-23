@@ -4,6 +4,7 @@ import FeaturesSection from '../components/FeaturesSection';
 import AboutSection from '../components/AboutSection';
 import AppFooter from '../components/AppFooter';
 import LoginModal from '../components/LoginModal';
+import LogoutToast from '../components/LogoutToast';
 import { useAppController } from '../hooks/useAppController';
 
 function Home() {
@@ -11,6 +12,8 @@ function Home() {
     searchKeyword,
     currentUser,
     showLoginModal,
+    showLogoutToast,
+    dismissLogoutToast,
     openLogin,
     closeLogin,
     loginSuccess,
@@ -34,6 +37,7 @@ function Home() {
       </main>
       <AppFooter />
       <LoginModal show={showLoginModal} onClose={closeLogin} onLoginSuccess={loginSuccess} />
+      <LogoutToast show={showLogoutToast} onClose={dismissLogoutToast} />
     </>
   );
 }
