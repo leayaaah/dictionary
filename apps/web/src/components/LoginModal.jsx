@@ -6,18 +6,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './LoginModal.css';
 
 function LoginModal({ show, onClose, onLoginSuccess }) {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
-  const usernameInputRef = useRef(null);
+  const emailInputRef = useRef(null);
 
   useEffect(() => {
     if (!show) return undefined;
 
-    usernameInputRef.current?.focus();
+    emailInputRef.current?.focus();
     const handleKeyDown = (event) => {
       if (event.key === 'Escape' && !isLoading) onClose();
     };
@@ -30,8 +30,8 @@ function LoginModal({ show, onClose, onLoginSuccess }) {
 
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
-    const normalizedUsername = username.trim();
-    if (!normalizedUsername || !password) {
+    const normalizedEmail = email.trim();
+    if (!normalizedEmail || !password) {
       setErrorMessage('Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.');
       return;
     }
@@ -40,14 +40,14 @@ function LoginModal({ show, onClose, onLoginSuccess }) {
     setIsLoading(true);
 
     try {
-      const account = await signIn(normalizedUsername, password);
+      const account = await signIn(normalizedEmail, password);
       if (!account) {
         setErrorMessage('Tên đăng nhập hoặc mật khẩu không chính xác.');
         return;
       }
 
       onLoginSuccess(account);
-      setUsername('');
+      setEmail('');
       setPassword('');
       onClose();
     } catch (error) {
@@ -83,8 +83,8 @@ function LoginModal({ show, onClose, onLoginSuccess }) {
                 </div>
                 <form onSubmit={handleLoginSubmit} className="signin-form">
                   <div className="login10-field">
-                    <label htmlFor="login10-username">Tên đăng nhập</label>
-                    <input ref={usernameInputRef} id="login10-username" type="text" className="login10-control" placeholder="Nhập tên đăng nhập" autoComplete="username" value={username} onChange={(event) => setUsername(event.target.value)} required disabled={isLoading} />
+                    <label htmlFor="login10-email">Email</label>
+                    <input ref={emailInputRef} id="login10-email" type="email" className="login10-control" placeholder="Nhập email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} required disabled={isLoading} />
                   </div>
                   <div className="login10-field login10-password-wrap">
                     <label htmlFor="login10-password">Mật khẩu</label>

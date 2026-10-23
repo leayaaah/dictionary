@@ -9,11 +9,7 @@ export interface Word {
   example?: string | null;
 }
 
-export interface Account {
-  id: number;
-  username: string;
-  [key: string]: unknown;
-}
+export type Account = import('@supabase/supabase-js').User;
 
 export function createDictionaryClient(url: string, anonKey: string, options?: Record<string, unknown>): SupabaseClient;
 export function getWordsPage(
@@ -21,5 +17,5 @@ export function getWordsPage(
   options: { page: number; pageSize: number; searchKeyword?: string },
 ): Promise<{ words: Word[]; totalPages: number }>;
 export function getRandomWord(client: SupabaseClient): Promise<Word | null>;
-export function signIn(client: SupabaseClient, username: string, password: string): Promise<Account | null>;
-export function login(client: SupabaseClient, username: string, password: string): Promise<Account | null>;
+export function signIn(client: SupabaseClient, email: string, password: string): Promise<Account>;
+export function login(client: SupabaseClient, email: string, password: string): Promise<Account>;

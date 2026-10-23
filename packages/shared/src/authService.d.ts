@@ -3,8 +3,8 @@ import type { Account } from './index.js';
 
 export function signIn(
   client: SupabaseClient,
-  username: string,
+  email: string,
   password: string,
-): Promise<Account | null>;
+): Promise<Account>;
 
 export const login: typeof signIn;
