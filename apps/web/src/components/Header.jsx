@@ -15,7 +15,7 @@ function Header({ onOpenLogin, currentUser, isAuthInitializing, onLogout }) {
           <span className="header-user" aria-live="polite">Đang khôi phục phiên...</span>
         ) : currentUser ? (
           <>
-            <span className="header-user">Xin chào, {currentUser.full_name || currentUser.user_metadata?.full_name || currentUser.email || currentUser.name || currentUser.username}</span>
+            <a className="header-user header-profile-link" href="/profile">Xin chào, {currentUser.full_name || currentUser.user_metadata?.full_name || currentUser.email || currentUser.name || currentUser.username}</a>
             <button type="button" className="header-action" onClick={onLogout}>Đăng xuất</button>
           </>
         ) : (

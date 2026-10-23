@@ -62,6 +62,20 @@
   margin: 0 !important; 
 }
 
+.favorite-button {
+  border: 0;
+  background: transparent;
+  color: #9b928c;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.favorite-button.is-favorite,
+.favorite-button:hover {
+  color: #d18a18;
+}
+
 .pagination-container {
   display: flex;
   justify-content: center;

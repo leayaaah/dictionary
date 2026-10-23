@@ -6,6 +6,7 @@ import AppFooter from '../components/AppFooter';
 import LoginModal from '../components/LoginModal';
 import LogoutToast from '../components/LogoutToast';
 import { useAppController } from '../hooks/useAppController';
+import { addSearchHistory } from '../services/profileService';
 
 function Home() {
   const {
@@ -22,6 +23,13 @@ function Home() {
     clearSearch,
   } = useAppController();
 
+  const handleSearch = (keyword) => {
+    searchWord(keyword);
+    if (currentUser) {
+      addSearchHistory(keyword).catch((error) => console.error('Không thể lưu lịch sử tra cứu:', error));
+    }
+  };
+
   return (
     <>
       <Header onOpenLogin={openLogin} currentUser={currentUser} isAuthInitializing={isAuthInitializing} onLogout={logout} />
@@ -29,10 +37,10 @@ function Home() {
         <section id="home" className="hero">
           <div className="overlay" />
           <div className="hero-content">
-            <SearchSection onSearch={searchWord} onClear={clearSearch} />
+            <SearchSection onSearch={handleSearch} onClear={clearSearch} />
           </div>
         </section>
-        <FeaturesSection searchKeyword={searchKeyword} />
+        <FeaturesSection searchKeyword={searchKeyword} currentUser={currentUser} />
         <AboutSection />
       </main>
       <AppFooter />
