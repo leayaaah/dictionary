@@ -1,18 +1,15 @@
 :root {
-  --color-ink: #0f172a;
-  --color-body: #334155;
-  --color-muted: #64748b;
-  --color-paper: #f0fdf9;
+  --color-ink: #1d2939;
+  --color-muted: #667085;
+  --color-paper: #f8fafc;
   --color-card: #ffffff;
-  --color-primary: #134e42;
-  --color-primary-dark: #0d3930;
-  --color-primary-container: #e6f4f1;
-  --color-primary-light: #238571;
-  --color-accent: #d99b2b;
-  --color-line: #e2e8f0;
-  --bs-primary: #134e42;
-  --bs-primary-rgb: 19, 78, 66;
-  --shadow-soft: 0 18px 45px rgba(19, 78, 66, 0.12);
+  --color-primary: #1d6b5b;
+  --color-primary-dark: #124c41;
+  --color-accent: #e9b949;
+  --color-line: #e5e7eb;
+  --bs-primary: #1d6b5b;
+  --bs-primary-rgb: 29, 107, 91;
+  --shadow-soft: 0 18px 45px rgba(18, 76, 65, 0.1);
 }
 
 * {
@@ -272,75 +269,6 @@ body {
 
 .about-section {
   background: var(--color-card);
-}
-
-.footer.bg-dark {
-  background: var(--color-primary-dark) !important;
-}
-
-/* Shared dictionary palette: preserve the desktop composition while keeping
-   surfaces, text and actions consistent with the mobile design system. */
-body {
-  background: var(--color-paper);
-  color: var(--color-ink);
-}
-
-.hero .overlay {
-  background:
-    linear-gradient(180deg, rgba(13, 57, 48, 0.82), rgba(19, 78, 66, 0.78) 52%, rgba(13, 57, 48, 0.92)),
-    linear-gradient(90deg, rgba(8, 46, 38, 0.3), rgba(230, 244, 241, 0.08));
-}
-
-.hero-tag {
-  border-color: rgba(185, 241, 223, 0.5);
-  background: rgba(13, 57, 48, 0.58);
-  color: #b9f1df;
-}
-
-.search-section h1 span {
-  color: #e2f3ef;
-  background: linear-gradient(90deg, #ffffff, #b9f1df);
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.hero-description,
-.suggestions {
-  color: #e2f3ef;
-}
-
-.search-form {
-  border-color: rgba(185, 241, 223, 0.65);
-  box-shadow: 0 18px 42px rgba(13, 57, 48, 0.28);
-}
-
-.search-button {
-  background: var(--color-primary);
-}
-
-.search-button:hover {
-  background: var(--color-primary-dark);
-}
-
-.suggestions button {
-  border-color: rgba(185, 241, 223, 0.35);
-  background: rgba(13, 57, 48, 0.58);
-  color: #fff;
-}
-
-.suggestions button:hover {
-  border-color: #b9f1df;
-  background: rgba(13, 57, 48, 0.8);
-  color: #b9f1df;
-}
-
-.features-section,
-.about-section {
-  background: var(--color-paper);
-}
-
-.about-section p {
-  color: var(--color-body);
 }
 
 .footer.bg-dark {

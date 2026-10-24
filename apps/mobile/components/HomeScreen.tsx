@@ -93,14 +93,6 @@ export default function HomeScreen({ user, onLogin }: HomeScreenProps) {
         <Text style={styles.heroTitle}>Tìm đúng từ,{ '\n' }hiểu sâu hơn.</Text>
         <Text style={styles.heroSubtitle}>Tra cứu từ điển S&apos;tiêng mọi lúc, ngay trên điện thoại.</Text>
         <SearchBox onSearch={search} onClear={clearSearch} />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.quickTags}>
-          <Text style={styles.quickLabel}>Phổ biến:</Text>
-          {['Bơh (Cây)', 'Lơp (Đẹp)', 'Nha (Nhà)', 'Đak (Nước)'].map((word) => (
-            <Pressable key={word} onPress={() => search(word.split(' ')[0])}>
-              <Text style={styles.quickTag}>{word}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
       </View>
       {!keyword ? <WordOfDay /> : null}
       <View style={styles.resultsHeader}>

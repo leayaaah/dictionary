@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import AuthModal from './components/AuthModal';
 import Header from './components/Header';
@@ -41,25 +41,6 @@ export default function App() {
         ) : (
           <ProfileScreen user={user} onBack={() => setScreen('home')} onLogout={handleLogout} />
         )}
-        <View style={styles.bottomNav}>
-          {[
-            ['⌂', 'Trang chủ'],
-            ['⌕', 'Tra từ'],
-            ['☆', 'Sổ tay'],
-            ['▤', 'Văn hoá'],
-            ['◎', 'Cá nhân'],
-          ].map(([icon, label], index) => (
-            <Pressable
-              key={label}
-              style={styles.navItem}
-              onPress={() => { if (index === 4 && user) setScreen('profile'); else if (index === 4) setAuthVisible(true); }}
-              accessibilityRole="button"
-            >
-              <Text style={[styles.navIcon, index === 0 && styles.navItemActive]}>{icon}</Text>
-              <Text style={[styles.navLabel, index === 0 && styles.navLabelActive]}>{label}</Text>
-            </Pressable>
-          ))}
-        </View>
         <AuthModal visible={authVisible} onClose={() => setAuthVisible(false)} />
         <LogoutToast visible={showLogoutToast} onDismiss={dismissLogoutToast} />
       </SafeAreaView>
