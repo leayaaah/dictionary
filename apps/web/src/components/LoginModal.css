@@ -340,3 +340,23 @@
 .login10-submit {
   background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
 }
+
+.login10-card::before {
+  background: linear-gradient(90deg, var(--color-primary-light), #b9f1df, var(--color-primary-dark));
+}
+
+.login10-mark {
+  border-color: rgba(35, 133, 113, 0.3);
+  background: var(--color-primary-container);
+  color: var(--color-primary);
+}
+
+.login10-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(19, 78, 66, 0.14);
+}
+
+.login10-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+  box-shadow: 0 4px 16px rgba(19, 78, 66, 0.28);
+}
