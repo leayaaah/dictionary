@@ -5,10 +5,19 @@ const CONTRIBUTIONS_TABLE = 'WordContributions';
 const WORDS_TABLE = 'Words';
 
 async function requireUser(client) {
+  if (!client?.auth?.getUser) {
+    throw new Error('Không thể kiểm tra phiên đăng nhập.');
+  }
+
   const { data, error } = await client.auth.getUser();
   if (error) throw error;
-  if (!data.user) throw new Error('Bạn cần đăng nhập để sử dụng chức năng này.');
-  return data.user;
+
+  const user = data?.user;
+  if (!user?.id) {
+    throw new Error('Bạn cần đăng nhập để sử dụng chức năng này.');
+  }
+
+  return user;
 }
 
 export async function getAccount(client) {

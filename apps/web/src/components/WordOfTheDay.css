@@ -40,7 +40,7 @@
   font-size: 18px;
 }
 
-.word-example {
+.word-of-day-container .word-example {
   margin: 15px 0 0 0;
   color: #e0bfb9;
   background-color: rgba(18, 20, 22, 0.55);
@@ -89,7 +89,7 @@
   color: #a9d4c7;
 }
 
-.word-example {
+.word-of-day-container .word-example {
   color: #e2f2ed;
   background-color: rgba(18, 76, 65, 0.45);
   border-left-color: var(--color-accent);
@@ -114,8 +114,28 @@
   color: #b9f1df;
 }
 
-.word-example {
+.word-of-day-container .word-example {
   color: #e2f3ef;
   background-color: rgba(13, 57, 48, 0.48);
   border-left-color: #b9f1df;
+}
+
+/* Light card surfaces keep the word and its example readable at a glance. */
+.word-of-day-container .word-card {
+  background: linear-gradient(135deg, #ffffff 0%, #eaf5f1 100%);
+  border: 1px solid #cfe3dc;
+  box-shadow: 0 18px 42px rgba(19, 78, 66, 0.12);
+}
+
+.word-of-day-container .word-title { color: var(--color-primary-dark); }
+.word-of-day-container .word-pos { color: #496e63; }
+.word-of-day-container .word-detail { color: #293b36; }
+.word-of-day-container .word-example {
+  padding: 12px 0 0;
+  border: 0;
+  border-top: 1px solid #dceae5;
+  border-radius: 0;
+  background: transparent;
+  color: #475569;
+  text-align: left;
 }

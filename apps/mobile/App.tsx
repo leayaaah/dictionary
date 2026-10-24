@@ -6,11 +6,13 @@ import Header from './components/Header';
 import HomeScreen from './components/HomeScreen';
 import LogoutToast from './components/LogoutToast';
 import ProfileScreen from './components/ProfileScreen';
+import NotebookScreen from './components/NotebookScreen';
+import CultureScreen from './components/CultureScreen';
 import { useAuthSession } from './hooks/useAuthSession';
 import { COLORS, styles } from './theme';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
-type AppScreen = 'home' | 'profile';
+type AppScreen = 'home' | 'notebook' | 'culture' | 'profile';
 
 export default function App() {
   const { user, isInitializing, logout, showLogoutToast, dismissLogoutToast } = useAuthSession();
@@ -21,6 +23,7 @@ export default function App() {
     const succeeded = await logout();
     if (succeeded) setScreen('home');
   };
+  const activeNavIndex = screen === 'notebook' ? 1 : screen === 'culture' ? 2 : screen === 'profile' ? 3 : 0;
 
   if (isInitializing) {
     return (
@@ -36,27 +39,35 @@ export default function App() {
       <SafeAreaView style={styles.container}>
         <StatusBar style="dark" />
         <Header user={user} onProfile={() => setScreen('profile')} onLogin={() => setAuthVisible(true)} onLogout={handleLogout} />
-        {screen === 'home' || !user ? (
+        {screen === 'home' ? (
           <HomeScreen user={user} onLogin={() => setAuthVisible(true)} />
-        ) : (
-          <ProfileScreen user={user} onBack={() => setScreen('home')} onLogout={handleLogout} />
-        )}
+        ) : screen === 'notebook' ? (
+          user ? <NotebookScreen userId={user.id} /> : <HomeScreen user={user} onLogin={() => setAuthVisible(true)} />
+        ) : screen === 'culture' ? (
+          <CultureScreen />
+        ) : user ? (
+          <ProfileScreen user={user} onBack={() => setScreen('home')} />
+        ) : <HomeScreen user={user} onLogin={() => setAuthVisible(true)} />}
         <View style={styles.bottomNav}>
           {[
             ['⌂', 'Trang chủ'],
-            ['⌕', 'Tra từ'],
             ['☆', 'Sổ tay'],
             ['▤', 'Văn hoá'],
             ['◎', 'Cá nhân'],
           ].map(([icon, label], index) => (
             <Pressable
               key={label}
-              style={styles.navItem}
-              onPress={() => { if (index === 4 && user) setScreen('profile'); else if (index === 4) setAuthVisible(true); }}
+              style={[styles.navItem, index === activeNavIndex && styles.navItemSelected]}
+              onPress={() => {
+                if (index === 0) setScreen('home');
+                if (index === 1) { if (user) setScreen('notebook'); else setAuthVisible(true); }
+                if (index === 2) setScreen('culture');
+                if (index === 3 && user) setScreen('profile'); else if (index === 3) setAuthVisible(true);
+              }}
               accessibilityRole="button"
             >
-              <Text style={[styles.navIcon, index === 0 && styles.navItemActive]}>{icon}</Text>
-              <Text style={[styles.navLabel, index === 0 && styles.navLabelActive]}>{label}</Text>
+              <Text style={[styles.navIcon, index === activeNavIndex && styles.navItemActive]}>{icon}</Text>
+              <Text style={[styles.navLabel, index === activeNavIndex && styles.navLabelActive]}>{label}</Text>
             </Pressable>
           ))}
         </View>

@@ -37,7 +37,7 @@ export default function WordOfDay() {
       <Text style={styles.wordDayTitle}>{word.word_st}</Text>
       <Text style={styles.wordPos}>{word.pos || 'Từ vựng'}</Text>
       <Text style={styles.wordMeaning}>{word.word_vi} · {word.meaning}</Text>
-      {word.example ? <Text style={styles.example}>“{word.example}”</Text> : null}
+      {word.example ? <Text style={styles.wordDayExample}>{word.example}</Text> : null}
     </View>
   );
 }

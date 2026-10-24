@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import {
   createContribution,
   deleteContribution,
@@ -16,7 +16,6 @@ import { styles } from '../theme';
 interface ProfileScreenProps {
   user: AuthUser;
   onBack: () => void;
-  onLogout: () => void;
 }
 
 interface ContributionForm {
@@ -38,7 +37,7 @@ const contributionFields: Array<{ key: keyof ContributionForm; placeholder: stri
   { key: 'phonetic', placeholder: 'Phiên âm' },
 ];
 
-export default function ProfileScreen({ user, onBack, onLogout }: ProfileScreenProps) {
+function ProfileScreen({ user, onBack }: ProfileScreenProps) {
   const [tab, setTab] = useState<ProfileTab>('overview');
   const [profile, setProfile] = useState<ProfileDetails>({ full_name: '', avatar_url: '' });
   const [favorites, setFavorites] = useState<FavoriteRecord[]>([]);
@@ -50,6 +49,11 @@ export default function ProfileScreen({ user, onBack, onLogout }: ProfileScreenP
 
   useEffect(() => {
     let active = true;
+
+    if (!user?.id) {
+      return () => { active = false; };
+    }
+
     Promise.all([getAccount(), getFavorites(), getSearchHistory(), getContributions()])
       .then(([account, saved, searched, created]) => {
         if (!active) return;
@@ -61,7 +65,7 @@ export default function ProfileScreen({ user, onBack, onLogout }: ProfileScreenP
       })
       .catch((loadError: unknown) => { if (active) setError(loadError instanceof Error ? loadError.message : 'Không thể tải hồ sơ.'); });
     return () => { active = false; };
-  }, []);
+  }, [user?.id]);
 
   const save = async () => {
     try {
@@ -92,16 +96,27 @@ export default function ProfileScreen({ user, onBack, onLogout }: ProfileScreenP
     ['history', 'Lịch sử'],
     ['contributions', 'Đóng góp'],
   ];
+  const displayName = profile.full_name.trim() || user.email?.split('@')[0] || 'Bạn';
+  const initials = displayName.split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase()).join('');
 
   return (
     <ScrollView contentContainerStyle={styles.profileContent}>
       <View style={styles.profileTop}>
         <Pressable onPress={onBack}><Text style={styles.backText}>‹ Tra cứu</Text></Pressable>
-        <Pressable onPress={onLogout}><Text style={styles.headerLink}>Đăng xuất</Text></Pressable>
       </View>
-      <Text style={styles.sectionKicker}>KHÔNG GIAN CÁ NHÂN</Text>
-      <Text style={styles.profileTitle}>Hồ sơ của bạn</Text>
-      <Text style={styles.profileSubtitle}>{user.email}</Text>
+      <View style={styles.profileSummaryCard}>
+        <View style={styles.profileAvatarWrap}>
+          {profile.avatar_url ? <Image source={{ uri: profile.avatar_url }} style={styles.profileAvatarImage} /> : <Text style={styles.profileAvatarInitials}>{initials}</Text>}
+        </View>
+        <Text style={styles.profileSummaryName}>{displayName}</Text>
+        <Text style={styles.profileSummaryEmail}>{user.email}</Text>
+        <View style={styles.profileSummaryBadge}><Text style={styles.profileSummaryBadgeText}>Thành viên cộng đồng</Text></View>
+      </View>
+      <View style={styles.profileStatsRow}>
+        <View style={styles.profileStat}><Text style={styles.profileStatValue}>{favorites.length}</Text><Text style={styles.profileStatLabel}>Yêu thích</Text></View>
+        <View style={styles.profileStat}><Text style={styles.profileStatValue}>{history.length}</Text><Text style={styles.profileStatLabel}>Tra cứu</Text></View>
+        <View style={styles.profileStat}><Text style={styles.profileStatValue}>{contributions.length}</Text><Text style={styles.profileStatLabel}>Đóng góp</Text></View>
+      </View>
       {message ? <Text style={styles.successText}>{message}</Text> : null}
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabs}>
@@ -126,7 +141,7 @@ export default function ProfileScreen({ user, onBack, onLogout }: ProfileScreenP
         {tab === 'history' ? (
           <View>
             <Text style={styles.cardTitle}>Lịch sử tra cứu</Text>
-            {history.length ? history.map((item) => <View style={styles.listItem} key={item.id}><Text style={styles.listTitle}>{item.search_query}</Text><Pressable onPress={() => deleteSearchHistoryItem(item.id).then(() => setHistory((items) => items.filter((entry) => entry.id !== item.id)))}><Text style={styles.deleteText}>Xóa</Text></Pressable></View>) : <Text style={styles.emptyText}>Chưa có lịch sử tra cứu.</Text>}
+            {history.length ? history.map((item) => <View style={styles.listItem} key={item.id}><View style={styles.listItemContent}><Text style={styles.listTitle}>{item.search_query}</Text></View><Pressable style={styles.deleteButton} onPress={() => deleteSearchHistoryItem(item.id).then(() => setHistory((items) => items.filter((entry) => entry.id !== item.id)))}><Text style={styles.deleteText}>Xóa</Text></Pressable></View>) : <Text style={styles.emptyText}>Chưa có lịch sử tra cứu.</Text>}
           </View>
         ) : null}
         {tab === 'contributions' ? (
@@ -134,10 +149,11 @@ export default function ProfileScreen({ user, onBack, onLogout }: ProfileScreenP
             <Text style={styles.cardTitle}>Đóng góp từ vựng</Text>
             {contributionFields.map(({ key, placeholder }) => <TextInput key={key} value={form[key]} onChangeText={(value) => setForm({ ...form, [key]: value })} placeholder={placeholder} style={styles.formInput} />)}
             <Pressable onPress={contribute} style={styles.primaryButton}><Text style={styles.primaryButtonText}>Gửi để kiểm duyệt</Text></Pressable>
-            {contributions.map((item) => <View style={styles.listItem} key={item.id}><Text style={styles.listTitle}>{item.word}</Text><Text style={styles.listDescription}>{item.definition} · {item.status}</Text><Pressable onPress={() => deleteContribution(item.id).then(() => setContributions((items) => items.filter((entry) => entry.id !== item.id)))}><Text style={styles.deleteText}>Xóa</Text></Pressable></View>)}
+            {contributions.map((item) => <View style={styles.listItem} key={item.id}><View style={styles.listItemContent}><Text style={styles.listTitle}>{item.word}</Text><Text style={styles.listDescription}>{item.definition} · {item.status}</Text></View><Pressable style={styles.deleteButton} onPress={() => deleteContribution(item.id).then(() => setContributions((items) => items.filter((entry) => entry.id !== item.id)))}><Text style={styles.deleteText}>Xóa</Text></Pressable></View>)}
           </View>
         ) : null}
       </View>
     </ScrollView>
   );
 }
+export default React.memo(ProfileScreen);
