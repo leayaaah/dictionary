@@ -94,8 +94,8 @@ function GetWordsPage({ searchKeyword, currentUser }) {
                     <tr key={item.id}>
                       <td className="word-st">{item.word_st}</td>
                       <td className="word-pos">{item.pos}</td>
-                      <td>{item.word_vi}</td>
-                      <td>{item.meaning}</td>
+                      <td className="word-translation">{item.word_vi}</td>
+                      <td className="word-meaning">{item.meaning || '—'}</td>
                       <td className="word-example">
                         {item.example ? `"${item.example}"` : ''}
                       </td>

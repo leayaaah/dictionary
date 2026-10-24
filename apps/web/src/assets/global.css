@@ -1,4 +1,18 @@
-﻿* {
+:root {
+  --color-ink: #1d2939;
+  --color-muted: #667085;
+  --color-paper: #f8fafc;
+  --color-card: #ffffff;
+  --color-primary: #1d6b5b;
+  --color-primary-dark: #124c41;
+  --color-accent: #e9b949;
+  --color-line: #e5e7eb;
+  --bs-primary: #1d6b5b;
+  --bs-primary-rgb: 29, 107, 91;
+  --shadow-soft: 0 18px 45px rgba(18, 76, 65, 0.1);
+}
+
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -6,14 +20,26 @@
 }
 
 body {
-  background-color: #f9f9f9;
-  color: #333;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  line-height: 1.5;
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--color-primary);
+  --bs-btn-border-color: var(--color-primary);
+  --bs-btn-hover-bg: var(--color-primary-dark);
+  --bs-btn-hover-border-color: var(--color-primary-dark);
+  --bs-btn-active-bg: var(--color-primary-dark);
+  --bs-btn-active-border-color: var(--color-primary-dark);
 }
 
 .hero {
   position: relative;
   width: 100%;
-  height: 70vh;
+  min-height: 650px;
+  height: auto;
+  background-color: #121416;
   background-image: url('/img/bg.jpg');
   background-size: cover;
   background-position: center;
@@ -24,7 +50,7 @@ body {
 .hero .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(13, 13, 51, 0.5);
+  background: linear-gradient(180deg, rgba(18, 20, 22, 0.9), rgba(26, 28, 30, 0.92) 58%, #121416);
   z-index: 1;
 }
 
@@ -38,92 +64,319 @@ body {
 }
 
 .search-section {
-  padding: 160px 20px 80px;
+  width: min(760px, 100%);
+  margin: auto;
+  padding: 150px 20px 92px;
   color: white;
   text-align: center;
 }
 
 .search-section h1 {
-  margin-bottom: 30px;
-  font-size: 36px;
+  margin-bottom: 28px;
+  color: #fff;
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.08;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.search-section h1 span {
+  color: #e9b949;
+  background: linear-gradient(90deg, #e9b949, #d9eee7, #95d4b3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-tag {
+  display: inline-flex;
+  margin-bottom: 24px;
+  padding: 7px 14px;
+  border: 1px solid rgba(233, 185, 73, 0.55);
+  border-radius: 999px;
+  background: rgba(18, 76, 65, 0.58);
+  color: #e9b949;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.hero-description {
+  max-width: 650px;
+  margin: 0 auto 36px;
+  color: #d9eee7;
+  font-size: 16px;
+  line-height: 1.7;
 }
 
 .search-form {
   display: flex;
   justify-content: center;
-  max-width: 600px;
+  max-width: 680px;
+  padding: 8px 8px 8px 20px;
+  border: 1px solid rgba(233, 185, 73, 0.65);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 16px 36px rgba(18, 76, 65, 0.24);
   margin: 0 auto;
 }
 
 .search-input {
   flex: 1;
-  padding: 15px 20px;
-  border: none;
-  border-radius: 4px 0 0 4px;
+  padding: 15px 18px;
+  border: 0;
+  border-radius: 999px;
   outline: none;
-  font-size: 18px;
+  font-size: 17px;
+  background: transparent;
+  color: #1a1c1e;
+}
+
+.search-icon {
+  margin-right: 12px;
+  color: #667085;
+  font-size: 26px;
+  line-height: 1;
 }
 
 .clear-button,
 .search-button {
-  padding: 15px 30px;
+  padding: 14px 22px;
+  border-radius: 999px;
   border: none;
   color: white;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: transform 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
 }
 
 .clear-button {
-  background-color: green;
+  background-color: transparent;
+  color: #667085;
 }
 
 .search-button {
-  background-color: #e63946;
+  background: linear-gradient(135deg, #1d6b5b, #124c41);
 }
 
 .search-button:hover {
-  background-color: #d62828;
+  background: linear-gradient(135deg, #2b806d, #1d6b5b);
+  box-shadow: 0 8px 18px rgba(18, 76, 65, 0.28);
+  transform: translateY(-1px);
+}
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  color: #d9eee7;
+  font-size: 12px;
+}
+
+.suggestions button {
+  padding: 5px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(18, 76, 65, 0.62);
+  color: #fff;
+  cursor: pointer;
+}
+
+.suggestions button:hover {
+  border-color: rgba(233, 185, 73, 0.7);
+  color: #e9b949;
 }
 
 .features-section {
-  padding: 40px 20px;
+  padding: 64px 20px;
+  background: #121416;
 }
 
 .about-section {
-  padding: 60px 20px;
-  background-color: #f9f9f9;
+  padding: 76px 20px;
+  background-color: #1a1c1e;
   text-align: center;
 }
 
 .about-section p {
   max-width: 600px;
   margin: 0 auto;
-  color: #555;
+  color: #667085;
+}
+
+.hero {
+  background-color: var(--color-paper);
+  background-image: none;
+}
+
+.hero .overlay {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(169, 212, 199, 0.42), transparent 34%),
+    linear-gradient(180deg, rgba(231, 241, 237, 0.98), rgba(248, 250, 252, 0.98));
+}
+
+.search-section {
+  color: var(--color-ink);
+}
+
+.search-section h1 {
+  color: var(--color-ink);
+  text-shadow: none;
+}
+
+.search-section h1 span {
+  color: var(--color-primary);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-primary-dark));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.hero-tag {
+  border-color: rgba(29, 107, 91, 0.25);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--color-primary);
+}
+
+.hero-description,
+.suggestions {
+  color: var(--color-muted);
+}
+
+.search-form {
+  border-color: rgba(29, 107, 91, 0.2);
+  box-shadow: var(--shadow-soft);
+}
+
+.suggestions button {
+  border-color: rgba(29, 107, 91, 0.18);
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--color-primary);
+}
+
+.suggestions button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary-dark);
+}
+
+.features-section {
+  background: var(--color-paper);
+}
+
+.about-section {
+  background: var(--color-card);
+}
+
+.footer.bg-dark {
+  background: var(--color-primary-dark) !important;
+}
+
+/* Preserve the atmospheric background while using the mobile blue-green palette. */
+.hero {
+  background-color: #164d49;
+  background-image: url('/img/bg.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.hero .overlay {
+  background:
+    linear-gradient(180deg, rgba(8, 54, 58, 0.72), rgba(19, 91, 88, 0.64) 52%, rgba(9, 55, 61, 0.78)),
+    linear-gradient(90deg, rgba(7, 50, 58, 0.22), rgba(255, 255, 255, 0.08));
+}
+
+.search-section {
+  color: #fff;
+}
+
+.search-section h1 {
+  color: #fff;
+  text-shadow: 0 3px 18px rgba(4, 35, 40, 0.42);
+}
+
+.search-section h1 span {
+  color: #d9f3ec;
+  background: linear-gradient(90deg, #f8e4a5, #d9f3ec 58%, #a9e1cf);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.hero-tag {
+  border-color: rgba(224, 246, 239, 0.45);
+  background: rgba(7, 57, 62, 0.5);
+  color: #f8e4a5;
+  box-shadow: 0 6px 18px rgba(4, 35, 40, 0.16);
+}
+
+.hero-description,
+.suggestions {
+  color: #effaf6;
+  text-shadow: 0 2px 10px rgba(4, 35, 40, 0.3);
+}
+
+.search-form {
+  border-color: rgba(224, 246, 239, 0.7);
+  box-shadow: 0 18px 42px rgba(4, 35, 40, 0.3);
+}
+
+.suggestions button {
+  border-color: rgba(224, 246, 239, 0.35);
+  background: rgba(7, 57, 62, 0.5);
+  color: #fff;
+}
+
+.suggestions button:hover {
+  border-color: #f8e4a5;
+  background: rgba(7, 57, 62, 0.75);
+  color: #f8e4a5;
 }
 
 @media (max-width: 768px) {
+  .hero {
+    min-height: 580px;
+  }
+
   .search-section {
-    padding: 160px 15px 40px;
+    padding: 155px 15px 40px;
   }
 
   .search-section h1 {
     font-size: 26px;
   }
 
+  .search-form {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px;
+    padding: 6px 6px 6px 14px;
+    border-radius: 20px;
+  }
+
+  .search-input {
+    min-width: 0;
+  }
+
+  .clear-button,
+  .search-button {
+    padding: 12px 16px;
+  }
+
+  .clear-button {
+    grid-column: 1 / -1;
+    border-radius: 8px;
+  }
+
+  .search-button {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
   .search-input {
     padding: 12px 15px;
     font-size: 16px;
-  }
-
-  .search-button,
-  .clear-button {
-    padding: 12px 20px;
-    font-size: 16px;
-  }
-
-  .clear-button {
-    border-radius: 4px;
   }
 }

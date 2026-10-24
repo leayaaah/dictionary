@@ -47,6 +47,12 @@ function ProfilePage() {
   if (user === undefined) return <main className="profile-loading">Đang tải hồ sơ...</main>;
   if (!user) return <Navigate to="/" replace />;
 
+  const displayName = profileForm.full_name || user.user_metadata?.full_name || user.email || 'Thành viên';
+  const initials = displayName.slice(0, 1).toUpperCase();
+  const joinedDate = user.created_at
+    ? new Date(user.created_at).toLocaleDateString('vi-VN')
+    : 'Thành viên của cộng đồng';
+
   const saveProfile = async (event) => {
     event.preventDefault();
     try {
@@ -81,14 +87,42 @@ function ProfilePage() {
     <>
       <Header currentUser={user} onLogout={logout} />
       <main className="profile-page">
-        <div className="profile-heading">
-          <div>
-            <p className="profile-eyebrow">KHÔNG GIAN CÁ NHÂN</p>
-            <h1>Hồ sơ của bạn</h1>
-            <p>Quản lý từ yêu thích, lịch sử tra cứu và các đóng góp cho cộng đồng.</p>
+        <section className="profile-hero">
+          <div className="profile-cover">
+            <span className="profile-verified">✦ Thành viên cộng đồng S'tiêng</span>
           </div>
-          <button type="button" className="profile-back" onClick={() => navigate('/')}>Về trang tra cứu</button>
-        </div>
+          <div className="profile-identity">
+            <div className="profile-identity-main">
+              <div className="profile-avatar">
+                {profileForm.avatar_url ? (
+                  <img src={profileForm.avatar_url} alt={`Ảnh đại diện của ${displayName}`} />
+                ) : (
+                  <span>{initials}</span>
+                )}
+                <span className="profile-online" aria-label="Đang trực tuyến">✓</span>
+              </div>
+              <div className="profile-identity-copy">
+                <p className="profile-eyebrow">KHÔNG GIAN CÁ NHÂN</p>
+                <h1>{displayName}</h1>
+                <div className="profile-meta">
+                  <span>{user.email}</span>
+                  <span aria-hidden="true">•</span>
+                  <span>Tham gia từ {joinedDate}</span>
+                </div>
+              </div>
+            </div>
+            <div className="profile-hero-actions">
+              <button type="button" className="profile-edit" onClick={() => setActiveTab('overview')}>✎ Chỉnh sửa hồ sơ</button>
+              <button type="button" className="profile-settings" aria-label="Cài đặt tài khoản">⚙</button>
+              <button type="button" className="profile-back" onClick={() => navigate('/')}>Về trang tra cứu</button>
+            </div>
+          </div>
+          <div className="profile-stats">
+            <div className="profile-stat profile-stat-amber"><strong>{favorites.length}</strong><span> Từ yêu thích</span></div>
+            <div className="profile-stat profile-stat-mint"><strong>{history.length}</strong><span>Lượt tra cứu</span></div>
+            <div className="profile-stat profile-stat-coral"><strong>{contributions.length}</strong><span>Từ đóng góp</span></div>
+          </div>
+        </section>
         {message && <p className="profile-message">{message}</p>}
         {error && <p className="profile-error">{error}</p>}
         <div className="profile-layout">
