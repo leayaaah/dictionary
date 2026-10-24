@@ -16,7 +16,10 @@ export default function Header({ user, onProfile, onLogin, onLogout }: HeaderPro
   return (
     <View style={styles.header}>
       <View>
-        <Text style={styles.brand}>S&apos;TIÊNG</Text>
+        <View style={styles.brandRow}>
+          <View style={styles.brandDot} />
+          <Text style={styles.brand}>S&apos;TIÊNG</Text>
+        </View>
         <Text style={styles.brandSub}>TỪ ĐIỂN TRỰC TUYẾN</Text>
       </View>
       {user ? (
