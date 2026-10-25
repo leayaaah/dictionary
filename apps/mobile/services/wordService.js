@@ -1,5 +1,5 @@
-import { getRandomWord as getRandomWordWithClient, getWordsPage as getWordsPageWithClient } from '@dictionary/shared/wordService';
+import { getAllWords as getAllWordsWithClient, getRandomWord as getRandomWordWithClient } from '@dictionary/shared/wordService';
 import { supabase } from '../lib/supabaseClient';
 
-export const getWordsPage = (options) => getWordsPageWithClient(supabase, options);
+export const getAllWords = () => getAllWordsWithClient(supabase);
 export const getRandomWord = () => getRandomWordWithClient(supabase);

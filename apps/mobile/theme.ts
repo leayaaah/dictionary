@@ -69,6 +69,7 @@ export const styles = StyleSheet.create({
   wordDayExample: { color: '#e3f4ef', fontSize: 13, fontStyle: 'italic', marginTop: 12, lineHeight: 20 },
   resultsHeader: { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   sectionTitle: { color: COLORS.ink, fontSize: 20, fontWeight: '800' },
+  searchGroupTitle: { color: COLORS.primary, fontSize: 16, fontWeight: '800', marginHorizontal: 20, marginTop: 14, marginBottom: 4 },
   pageLabel: { color: COLORS.muted, fontSize: 13 },
   wordCard: { marginHorizontal: 20, marginVertical: 7, padding: 18, borderRadius: 16, backgroundColor: COLORS.card, borderWidth: 1, borderColor: '#d7e4df', shadowColor: '#163c32', shadowOpacity: 0.06, shadowRadius: 10, shadowOffset: { width: 0, height: 3 }, elevation: 2 },
   wordCardTop: { flexDirection: 'row', alignItems: 'flex-start' },
