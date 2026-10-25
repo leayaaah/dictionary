@@ -13,6 +13,7 @@ export interface Word {
 export type Account = import('@supabase/supabase-js').User;
 
 export function createDictionaryClient(url: string, anonKey: string, options?: Record<string, unknown>): SupabaseClient;
+export function getAllWords(client: SupabaseClient): Promise<Word[]>;
 export function getWordsPage(
   client: SupabaseClient,
   options: { page: number; pageSize: number; searchKeyword?: string },

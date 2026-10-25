@@ -5,7 +5,7 @@ function FeaturesSection({ searchKeyword, currentUser }) {
   return (
     <section id="features" className="features-section">
       {!searchKeyword && <WordOfTheDay />}
-      <GetWordsPage key={searchKeyword} searchKeyword={searchKeyword} currentUser={currentUser} />
+      <GetWordsPage searchKeyword={searchKeyword} currentUser={currentUser} />
     </section>
   );
 }

@@ -1,6 +1,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import type { Word } from './index.js';
 
+export function getAllWords(client: SupabaseClient): Promise<Word[]>;
 export function getWordsPage(
   client: SupabaseClient,
   options: { page: number; pageSize: number; searchKeyword?: string },

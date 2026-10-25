@@ -58,6 +58,13 @@
   transition: background-color 160ms ease;
 }
 
+.words-subtitle {
+  margin: 1.5rem 0 0.75rem;
+  color: #164e63;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
 .words-table tbody tr:hover {
   background-color: rgba(45, 106, 79, 0.18);
 }

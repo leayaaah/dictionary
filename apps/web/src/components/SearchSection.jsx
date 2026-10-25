@@ -1,16 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-function SearchSection({ onSearch, onClear }) {
+function SearchSection({ onSearch }) {
   const [keyword, setKeyword] = useState('');
+  const lastDispatchedKeyword = useRef('');
+
+  useEffect(() => {
+    const normalizedKeyword = keyword.trim();
+    const timeoutId = setTimeout(() => {
+      if (normalizedKeyword === lastDispatchedKeyword.current) return;
+
+      lastDispatchedKeyword.current = normalizedKeyword;
+      onSearch(normalizedKeyword);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [keyword, onSearch]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (keyword.trim()) onSearch(keyword.trim());
-  };
+    const normalizedKeyword = keyword.trim();
+    if (normalizedKeyword === lastDispatchedKeyword.current) return;
 
-  const handleClear = () => {
-    setKeyword('');
-    onClear();
+    lastDispatchedKeyword.current = normalizedKeyword;
+    onSearch(normalizedKeyword);
   };
 
   return (
@@ -31,7 +43,6 @@ function SearchSection({ onSearch, onClear }) {
           onChange={(event) => setKeyword(event.target.value)}
         />
         <button type="submit" className="search-button">Tra cứu <span aria-hidden="true">→</span></button>
-        {keyword && <button type="button" className="clear-button" onClick={handleClear}>Xóa</button>}
       </form>
       <div className="suggestions" aria-label="Gợi ý phổ biến">
         <span className="suggestions-label">Gợi ý phổ biến:</span>
