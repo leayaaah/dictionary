@@ -27,6 +27,9 @@ function Header({ onOpenLogin, currentUser, isAuthInitializing, onLogout }) {
               <span className="user-greeting">Xin chào,</span>{' '}
               {currentUser.full_name || currentUser.user_metadata?.full_name || currentUser.email || currentUser.name || currentUser.username}
             </Link>
+            {currentUser.app_metadata?.role === 'admin' && (
+              <Link className="header-admin-link" to="/admin/contributions">Quản trị đóng góp</Link>
+            )}
             <button type="button" className="header-action" onClick={onLogout}>↪ <span>Đăng xuất</span></button>
           </>
         ) : (

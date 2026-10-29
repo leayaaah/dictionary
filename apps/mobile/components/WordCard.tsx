@@ -5,7 +5,7 @@ import { styles } from '../theme';
 interface WordCardProps {
   item: DictionaryWord;
   favorite: boolean;
-  onFavorite: (id: number) => void;
+  onFavorite: (id: string) => void;
   signedIn: boolean;
   containerStyle?: StyleProp<ViewStyle>;
 }

@@ -20,8 +20,8 @@ export default function HomeScreen({ user, onLogin }: HomeScreenProps) {
   const [allWords, setAllWords] = useState<DictionaryWord[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-  const [favoriteState, setFavoriteState] = useState<{ userId: string; ids: Set<number> } | null>(null);
-  const favorites = user && favoriteState?.userId === user.id ? favoriteState.ids : new Set<number>();
+  const [favoriteState, setFavoriteState] = useState<{ userId: string; ids: Set<string> } | null>(null);
+  const favorites = user && favoriteState?.userId === user.id ? favoriteState.ids : new Set<string>();
 
   useEffect(() => {
     let active = true;
@@ -62,7 +62,7 @@ export default function HomeScreen({ user, onLogin }: HomeScreenProps) {
     if (user && value) addSearchHistory(value).catch(() => {});
   }, [user]);
 
-  const toggleFavorite = async (id: number) => {
+  const toggleFavorite = async (id: string) => {
     if (!user) {
       onLogin();
       return;
@@ -71,14 +71,14 @@ export default function HomeScreen({ user, onLogin }: HomeScreenProps) {
       if (favorites.has(id)) {
         await removeFavorite(id);
         setFavoriteState((current) => {
-          const ids = current?.userId === user.id ? new Set(current.ids) : new Set<number>();
+          const ids = current?.userId === user.id ? new Set(current.ids) : new Set<string>();
           ids.delete(id);
           return { userId: user.id, ids };
         });
       } else {
         await addFavorite(id);
         setFavoriteState((current) => {
-          const ids = current?.userId === user.id ? new Set(current.ids) : new Set<number>();
+          const ids = current?.userId === user.id ? new Set(current.ids) : new Set<string>();
           ids.add(id);
           return { userId: user.id, ids };
         });

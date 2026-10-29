@@ -4,6 +4,36 @@ const HISTORY_TABLE = 'SearchHistory';
 const CONTRIBUTIONS_TABLE = 'WordContributions';
 const WORDS_TABLE = 'Words';
 
+export const CONTRIBUTION_STATUS_LABELS = {
+  pending: 'Đang chờ duyệt',
+  approved: 'Đã duyệt',
+  rejected: 'Bị từ chối',
+};
+
+export function getContributionStatusLabel(status) {
+  return CONTRIBUTION_STATUS_LABELS[status] || 'Không xác định';
+}
+
+export const CONTRIBUTION_FIELD_LIMITS = {
+  word: 100,
+  definition: 1000,
+  part_of_speech: 50,
+  phonetic: 100,
+};
+
+export function validateContribution(values) {
+  const normalized = Object.fromEntries(
+    Object.keys(CONTRIBUTION_FIELD_LIMITS).map((key) => [key, String(values?.[key] || '').trim().replace(/\s+/g, ' ')]),
+  );
+  const errors = {};
+  if (!normalized.word) errors.word = 'Vui lòng nhập từ vựng.';
+  if (!normalized.definition) errors.definition = 'Vui lòng nhập định nghĩa.';
+  for (const [key, limit] of Object.entries(CONTRIBUTION_FIELD_LIMITS)) {
+    if (normalized[key].length > limit) errors[key] = `Tối đa ${limit} ký tự.`;
+  }
+  return { normalized, errors };
+}
+
 async function requireUser(client) {
   if (!client?.auth?.getUser) {
     throw new Error('Không thể kiểm tra phiên đăng nhập.');
@@ -17,6 +47,12 @@ async function requireUser(client) {
     throw new Error('Bạn cần đăng nhập để sử dụng chức năng này.');
   }
 
+  return user;
+}
+
+async function requireAdmin(client) {
+  const user = await requireUser(client);
+  if (user.app_metadata?.role !== 'admin') throw new Error('Bạn không có quyền quản lý đóng góp.');
   return user;
 }
 
@@ -101,19 +137,72 @@ export async function getContributions(client) {
 
 export async function createContribution(client, contribution) {
   const user = await requireUser(client);
-  const { data, error } = await client
+  const { normalized, errors } = validateContribution(contribution);
+  if (Object.keys(errors).length) throw new Error(Object.values(errors)[0]);
+
+  const exactWordPattern = normalized.word.replace(/[\\%_]/g, '\\$&');
+  const { data: existingWord, error: wordsError } = await client
+    .from(WORDS_TABLE)
+    .select('id')
+    .ilike('word_st', exactWordPattern)
+    .limit(1)
+    .maybeSingle();
+  if (wordsError) throw wordsError;
+  if (existingWord) {
+    throw new Error('Từ này đã có trong từ điển.');
+  }
+
+  const { data: pendingItems, error: pendingError } = await client
     .from(CONTRIBUTIONS_TABLE)
-    .insert({ ...contribution, account_id: user.id, word: contribution.word.trim(), definition: contribution.definition.trim() })
-    .select()
-    .single();
+    .select('word, definition')
+    .eq('account_id', user.id)
+    .eq('status', 'pending');
+  if (pendingError) throw pendingError;
+  const duplicate = (pendingItems || []).some((item) =>
+    item.word?.trim().toLocaleLowerCase() === normalized.word.toLocaleLowerCase()
+    && item.definition?.trim().replace(/\s+/g, ' ').toLocaleLowerCase() === normalized.definition.toLocaleLowerCase(),
+  );
+  if (duplicate) throw new Error('Bạn đã gửi một đóng góp tương tự và đang chờ duyệt.');
+
+  const { data, error } = await client.rpc('submit_contribution', { contribution_data: normalized });
   if (error) throw error;
   return data;
 }
 
 export async function deleteContribution(client, id) {
   const user = await requireUser(client);
-  const { error } = await client.from(CONTRIBUTIONS_TABLE).delete().eq('account_id', user.id).eq('id', id);
+  const { data: contribution, error: lookupError } = await client.from(CONTRIBUTIONS_TABLE)
+    .select('id, status').eq('account_id', user.id).eq('id', id).maybeSingle();
+  if (lookupError) throw lookupError;
+  if (contribution?.status !== 'pending') throw new Error('Chỉ có thể xóa đóng góp đang chờ duyệt.');
+  const { data, error } = await client.from(CONTRIBUTIONS_TABLE).delete()
+    .eq('account_id', user.id).eq('id', id).eq('status', 'pending').select('id').maybeSingle();
   if (error) throw error;
+  if (!data) throw new Error('Đóng góp đã được xử lý và không thể xóa.');
+}
+
+export async function getAdminContributions(client, { status = 'all', search = '', page = 1, pageSize = 20 } = {}) {
+  await requireAdmin(client);
+  let query = client
+    .from(CONTRIBUTIONS_TABLE)
+    .select('*, Accounts!WordContributions_account_id_fkey(full_name)', { count: 'exact' });
+  if (status !== 'all') query = query.eq('status', status);
+  if (search.trim()) query = query.ilike('word', `%${search.trim()}%`);
+  const { data, error, count } = await query.order('created_at', { ascending: false }).range((page - 1) * pageSize, page * pageSize - 1);
+  if (error) throw error;
+  return { contributions: data || [], total: count || 0 };
+}
+
+export async function moderateContribution(client, action, id, note = '') {
+  await requireAdmin(client);
+  const normalizedNote = note.trim();
+  if (action === 'reject' && !normalizedNote) throw new Error('Vui lòng nhập lý do từ chối.');
+  const { data, error } = await client.rpc(action === 'approve' ? 'approve_contribution' : 'reject_contribution', {
+    contribution_id: id,
+    ...(action === 'reject' ? { note: normalizedNote } : {}),
+  });
+  if (error) throw error;
+  return data;
 }
 
 export { WORDS_TABLE };

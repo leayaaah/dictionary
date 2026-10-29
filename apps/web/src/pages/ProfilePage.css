@@ -528,6 +528,14 @@
   margin-bottom: 24px;
 }
 
+.contribution-form label {
+  display: grid;
+  gap: 6px;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .contribution-form .profile-primary {
   grid-column: 1 / -1;
   justify-self: start;

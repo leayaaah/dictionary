@@ -153,6 +153,17 @@
   text-decoration: none;
 }
 
+.header-admin-link {
+  color: var(--color-accent, #a04a32);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.header-admin-link:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;

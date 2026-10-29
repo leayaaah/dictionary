@@ -3,6 +3,8 @@ import { Image, Pressable, ScrollView, Text, TextInput, View } from 'react-nativ
 import * as ImagePicker from 'expo-image-picker';
 import {
   createContribution,
+  getContributionStatusLabel,
+  validateContribution,
   deleteContribution,
   deleteSearchHistoryItem,
   getAccount,
@@ -29,12 +31,7 @@ interface ContributionForm {
   phonetic: string;
 }
 
-interface AccountRecord {
-  full_name?: string | null;
-  avatar_url?: string | null;
-}
-
-const contributionFields: Array<{ key: keyof ContributionForm; placeholder: string }> = [
+const contributionFields: { key: keyof ContributionForm; placeholder: string }[] = [
   { key: 'word', placeholder: 'Từ mới *' },
   { key: 'definition', placeholder: 'Định nghĩa *' },
   { key: 'part_of_speech', placeholder: 'Từ loại' },
@@ -51,6 +48,8 @@ function ProfileScreen({ user, onBack, onAvatarChanged }: ProfileScreenProps) {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isAvatarUploading, setIsAvatarUploading] = useState(false);
+  const [isContributionSubmitting, setIsContributionSubmitting] = useState(false);
+  const [contributionErrors, setContributionErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     let active = true;
@@ -62,11 +61,10 @@ function ProfileScreen({ user, onBack, onAvatarChanged }: ProfileScreenProps) {
     Promise.all([getAccount(), getFavorites(), getSearchHistory(), getContributions()])
       .then(([account, saved, searched, created]) => {
         if (!active) return;
-        const accountDetails = account as AccountRecord;
-        setProfile({ full_name: accountDetails.full_name || '', avatar_url: accountDetails.avatar_url || '' });
-        setFavorites(saved as FavoriteRecord[]);
-        setHistory(searched as HistoryRecord[]);
-        setContributions(created as Contribution[]);
+        setProfile({ full_name: account.full_name || '', avatar_url: account.avatar_url || '' });
+        setFavorites(saved);
+        setHistory(searched);
+        setContributions(created);
       })
       .catch((loadError: unknown) => { if (active) setError(loadError instanceof Error ? loadError.message : 'Không thể tải hồ sơ.'); });
     return () => { active = false; };
@@ -134,19 +132,24 @@ function ProfileScreen({ user, onBack, onAvatarChanged }: ProfileScreenProps) {
   };
 
   const contribute = async () => {
-    if (!form.word.trim() || !form.definition.trim()) return;
+    const { normalized, errors } = validateContribution(form);
+    setContributionErrors(errors);
+    if (Object.keys(errors).length) return;
+    setIsContributionSubmitting(true);
     try {
-      const created = await createContribution(form) as Contribution;
+      const created = await createContribution(normalized);
       setContributions((items) => [created, ...items]);
       setForm({ word: '', definition: '', part_of_speech: '', phonetic: '' });
       setMessage('Đóng góp đang chờ kiểm duyệt.');
       setError('');
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Không thể gửi đóng góp.');
+    } finally {
+      setIsContributionSubmitting(false);
     }
   };
 
-  const tabs: Array<[ProfileTab, string]> = [
+  const tabs: [ProfileTab, string][] = [
     ['overview', 'Cá nhân'],
     ['favorites', `Yêu thích (${favorites.length})`],
     ['history', 'Lịch sử'],
@@ -205,9 +208,9 @@ function ProfileScreen({ user, onBack, onAvatarChanged }: ProfileScreenProps) {
         {tab === 'contributions' ? (
           <View>
             <Text style={styles.cardTitle}>Đóng góp từ vựng</Text>
-            {contributionFields.map(({ key, placeholder }) => <TextInput key={key} value={form[key]} onChangeText={(value) => setForm({ ...form, [key]: value })} placeholder={placeholder} style={styles.formInput} />)}
-            <Pressable onPress={contribute} style={styles.primaryButton}><Text style={styles.primaryButtonText}>Gửi để kiểm duyệt</Text></Pressable>
-            {contributions.map((item) => <View style={styles.listItem} key={item.id}><View style={styles.listItemContent}><Text style={styles.listTitle}>{item.word}</Text><Text style={styles.listDescription}>{item.definition} · {item.status}</Text></View><Pressable style={styles.deleteButton} onPress={() => deleteContribution(item.id).then(() => setContributions((items) => items.filter((entry) => entry.id !== item.id)))}><Text style={styles.deleteText}>Xóa</Text></Pressable></View>)}
+            {contributionFields.map(({ key, placeholder }) => <View key={key}><TextInput value={form[key]} maxLength={key === 'word' ? 100 : key === 'definition' ? 1000 : key === 'part_of_speech' ? 50 : 100} onChangeText={(value) => { setForm({ ...form, [key]: value }); setContributionErrors((items) => ({ ...items, [key]: '' })); setMessage(''); setError(''); }} placeholder={placeholder} style={styles.formInput} />{contributionErrors[key] ? <Text style={styles.errorText}>{contributionErrors[key]}</Text> : null}</View>)}
+            <Pressable onPress={contribute} disabled={isContributionSubmitting} style={styles.primaryButton}><Text style={styles.primaryButtonText}>{isContributionSubmitting ? 'Đang gửi…' : 'Gửi để kiểm duyệt'}</Text></Pressable>
+            {contributions.map((item) => <View style={styles.listItem} key={item.id}><View style={styles.listItemContent}><Text style={styles.listTitle}>{item.word}</Text><Text style={styles.listDescription}>{item.definition} · {getContributionStatusLabel(item.status)}</Text>{item.status === 'rejected' && item.admin_note ? <Text style={styles.errorText}>Lý do từ chối: {item.admin_note}</Text> : null}{item.status === 'approved' && item.published_word_id ? <Text style={styles.listDescription}>Mã từ đã duyệt: {item.published_word_id}</Text> : null}</View>{item.status === 'pending' && <Pressable style={styles.deleteButton} onPress={async () => { try { await deleteContribution(item.id); setContributions((items) => items.filter((entry) => entry.id !== item.id)); } catch (deleteError) { setError(deleteError instanceof Error ? deleteError.message : 'Không thể xóa đóng góp.'); } }}><Text style={styles.deleteText}>Xóa</Text></Pressable>}</View>)}
           </View>
         ) : null}
       </View>

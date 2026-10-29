@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 export type { AuthChangeEvent, AuthResponse, Session } from '@supabase/supabase-js';
 
 export interface Word {
-  id: number;
+  id: string;
   word_st: string;
   word_vi: string;
   pos?: string | null;
@@ -31,3 +31,24 @@ export function onAuthStateChange(
   client: SupabaseClient,
   callback: (event: import('@supabase/supabase-js').AuthChangeEvent, session: import('@supabase/supabase-js').Session | null) => void,
 ): ReturnType<SupabaseClient['auth']['onAuthStateChange']>['data']['subscription'];
+
+export {
+  addFavorite,
+  addSearchHistory,
+  createContribution,
+  deleteContribution,
+  deleteSearchHistoryItem,
+  getAccount,
+  getContributions,
+  getAdminContributions,
+  getContributionStatusLabel,
+  moderateContribution,
+  validateContribution,
+  getFavoriteIds,
+  getFavorites,
+  getSearchHistory,
+  removeFavorite,
+  updateAccount,
+  CONTRIBUTION_FIELD_LIMITS,
+} from './profileService';
+export type { Contribution } from './profileService';

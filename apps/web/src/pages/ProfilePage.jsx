@@ -1,6 +1,7 @@
 import React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { getContributionStatusLabel, validateContribution } from '@dictionary/shared/profileService';
 import Header from '../components/Header';
 import AppFooter from '../components/AppFooter';
 import { getSession, signOut } from '../services/authService';
@@ -32,6 +33,8 @@ function ProfilePage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isAvatarUploading, setIsAvatarUploading] = useState(false);
+  const [isContributionSubmitting, setIsContributionSubmitting] = useState(false);
+  const [contributionErrors, setContributionErrors] = useState({});
   const avatarInputRef = useRef(null);
 
   useEffect(() => {
@@ -128,21 +131,35 @@ function ProfilePage() {
 
   const submitContribution = async (event) => {
     event.preventDefault();
-    if (!form.word.trim() || !form.definition.trim()) return;
+    const { normalized, errors } = validateContribution(form);
+    setContributionErrors(errors);
+    if (Object.keys(errors).length) return;
+    setIsContributionSubmitting(true);
     try {
       setError('');
-      const created = await createContribution(form);
+      const created = await createContribution(normalized);
       setContributions((items) => [created, ...items]);
       setForm(emptyContribution);
       setMessage('Đóng góp đã được gửi và đang chờ kiểm duyệt.');
     } catch (submitError) {
       setError(submitError.message || 'Không thể gửi đóng góp.');
+    } finally {
+      setIsContributionSubmitting(false);
     }
   };
 
   const logout = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const removeContribution = async (id) => {
+    try {
+      await deleteContribution(id);
+      setContributions((items) => items.filter((contribution) => contribution.id !== id));
+    } catch (deleteError) {
+      setError(deleteError.message || 'Không thể xóa đóng góp.');
+    }
   };
 
   return (
@@ -245,13 +262,13 @@ function ProfilePage() {
               <div>
                 <h2>Đóng góp từ vựng</h2>
                 <form className="contribution-form" onSubmit={submitContribution}>
-                  <input required placeholder="Từ mới *" value={form.word} onChange={(event) => setForm({ ...form, word: event.target.value })} />
-                  <input required placeholder="Định nghĩa *" value={form.definition} onChange={(event) => setForm({ ...form, definition: event.target.value })} />
-                  <input placeholder="Từ loại" value={form.part_of_speech} onChange={(event) => setForm({ ...form, part_of_speech: event.target.value })} />
-                  <input placeholder="Phiên âm" value={form.phonetic} onChange={(event) => setForm({ ...form, phonetic: event.target.value })} />
-                  <button className="profile-primary" type="submit">Gửi để kiểm duyệt</button>
+                  <label>Từ mới *<input maxLength={100} aria-required="true" aria-invalid={Boolean(contributionErrors.word)} value={form.word} onChange={(event) => { setForm({ ...form, word: event.target.value }); setContributionErrors((items) => ({ ...items, word: '' })); setMessage(''); setError(''); }} />{contributionErrors.word && <span className="profile-error">{contributionErrors.word}</span>}</label>
+                  <label>Định nghĩa *<input maxLength={1000} aria-required="true" aria-invalid={Boolean(contributionErrors.definition)} value={form.definition} onChange={(event) => { setForm({ ...form, definition: event.target.value }); setContributionErrors((items) => ({ ...items, definition: '' })); setMessage(''); setError(''); }} />{contributionErrors.definition && <span className="profile-error">{contributionErrors.definition}</span>}</label>
+                  <label>Từ loại<input maxLength={50} aria-invalid={Boolean(contributionErrors.part_of_speech)} value={form.part_of_speech} onChange={(event) => { setForm({ ...form, part_of_speech: event.target.value }); setContributionErrors((items) => ({ ...items, part_of_speech: '' })); setMessage(''); setError(''); }} />{contributionErrors.part_of_speech && <span className="profile-error">{contributionErrors.part_of_speech}</span>}</label>
+                  <label>Phiên âm<input maxLength={100} aria-invalid={Boolean(contributionErrors.phonetic)} value={form.phonetic} onChange={(event) => { setForm({ ...form, phonetic: event.target.value }); setContributionErrors((items) => ({ ...items, phonetic: '' })); setMessage(''); setError(''); }} />{contributionErrors.phonetic && <span className="profile-error">{contributionErrors.phonetic}</span>}</label>
+                  <button className="profile-primary" type="submit" disabled={isContributionSubmitting}>{isContributionSubmitting ? "Đang gửi…" : "Gửi để kiểm duyệt"}</button>
                 </form>
-                <div className="profile-list">{contributions.map((item) => <article className="profile-list-item" key={item.id}><div><strong>{item.word}</strong><span>{item.definition}</span></div><span className={`status status-${item.status}`}>{item.status}</span>{item.status === 'pending' && <button type="button" onClick={async () => { await deleteContribution(item.id); setContributions((items) => items.filter((contribution) => contribution.id !== item.id)); }}>Xóa</button>}</article>)}</div>
+                <div className="profile-list">{contributions.map((item) => <article className="profile-list-item" key={item.id}><div><strong>{item.word}</strong><span>{item.definition}</span>{item.status === 'rejected' && item.admin_note && <small>Lý do từ chối: {item.admin_note}</small>}</div><span className={`status status-${item.status}`}>{getContributionStatusLabel(item.status)}</span>{item.status === 'pending' && <button type="button" onClick={() => removeContribution(item.id)}>Xóa</button>}</article>)}</div>
               </div>
             )}
           </section>

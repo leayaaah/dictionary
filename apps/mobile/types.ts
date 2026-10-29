@@ -5,7 +5,7 @@ export type DictionaryWord = Word;
 
 export interface FavoriteRecord {
   id: string | number;
-  word_id?: number;
+  word_id?: string;
   Words?: DictionaryWord;
 }
 
@@ -15,12 +15,16 @@ export interface HistoryRecord {
 }
 
 export interface Contribution {
-  id: string | number;
+  id: string;
   word: string;
   definition: string;
-  part_of_speech?: string;
-  phonetic?: string;
-  status?: string;
+  part_of_speech: string | null;
+  phonetic: string | null;
+  status: 'pending' | 'approved' | 'rejected';
+  admin_note?: string | null;
+  reviewed_by?: string | null;
+  reviewed_at?: string | null;
+  published_word_id?: string | null;
 }
 
 export interface ProfileDetails {

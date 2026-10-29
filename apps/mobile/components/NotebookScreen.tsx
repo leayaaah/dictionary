@@ -20,7 +20,7 @@ export default function NotebookScreen({ userId }: NotebookScreenProps) {
     return () => { active = false; };
   }, [userId]);
 
-  const deleteFavorite = async (wordId: number) => {
+  const deleteFavorite = async (wordId: string) => {
     try {
       await removeFavorite(wordId);
       setFavorites((items) => items.filter((item) => item.word_id !== wordId));

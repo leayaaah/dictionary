@@ -1,0 +1,47 @@
+.admin-contributions {
+  width: min(1100px, calc(100% - 32px));
+  margin: 112px auto 64px;
+  color: #243b35;
+}
+
+.admin-contribution-controls,
+.admin-contribution-list button,
+.admin-contributions nav,
+.admin-contribution-detail {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.admin-contribution-controls { margin: 24px 0; flex-wrap: wrap; }
+.admin-contribution-controls label { display: grid; gap: 6px; }
+.admin-contribution-controls input,
+.admin-contribution-controls select,
+.admin-contribution-detail textarea {
+  min-width: 220px;
+  padding: 10px 12px;
+  border: 1px solid #c7d5ce;
+  border-radius: 8px;
+}
+
+.admin-contribution-list { display: grid; gap: 10px; }
+.admin-contribution-list button {
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #d7e2dc;
+  border-radius: 10px;
+  background: #fff;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-contributions nav { justify-content: center; margin: 24px 0; }
+.admin-contribution-detail { align-items: stretch; flex-direction: column; padding: 20px; border: 1px solid #d7e2dc; border-radius: 12px; background: #f7faf8; }
+.admin-contribution-detail textarea { min-height: 100px; width: 100%; }
+.admin-contributions [role="alert"] { color: #a02b27; }
+
+@media (max-width: 640px) {
+  .admin-contribution-list button { align-items: flex-start; flex-direction: column; gap: 5px; }
+}

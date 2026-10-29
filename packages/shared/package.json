@@ -25,5 +25,8 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.97.0"
+  },
+  "scripts": {
+    "test": "node --test"
   }
 }

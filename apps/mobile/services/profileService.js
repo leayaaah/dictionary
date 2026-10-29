@@ -6,6 +6,8 @@ import {
   deleteSearchHistoryItem as deleteSearchHistoryItemWithClient,
   getAccount as getAccountWithClient,
   getContributions as getContributionsWithClient,
+  getContributionStatusLabel,
+  validateContribution,
   getFavoriteIds as getFavoriteIdsWithClient,
   getFavorites as getFavoritesWithClient,
   getSearchHistory as getSearchHistoryWithClient,
@@ -57,3 +59,4 @@ export const deleteSearchHistoryItem = (id) => deleteSearchHistoryItemWithClient
 export const getContributions = () => getContributionsWithClient(supabase);
 export const createContribution = (contribution) => createContributionWithClient(supabase, contribution);
 export const deleteContribution = (id) => deleteContributionWithClient(supabase, id);
+export { getContributionStatusLabel, validateContribution };
