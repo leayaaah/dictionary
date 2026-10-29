@@ -117,7 +117,10 @@ function ProfilePage() {
       if (uploadedAvatar) {
         removeProfileAvatarByUrl(uploadedAvatar.publicUrl, user.id).catch(() => {});
       }
-      setError(uploadError.message || 'Không thể tải ảnh đại diện lên. Vui lòng thử lại.');
+      const errorMessage = uploadError.message || '';
+      setError(/bucket not found/i.test(errorMessage)
+        ? 'Kh\u00f4ng t\u00ecm th\u1ea5y bucket profile-avatars tr\u00ean Supabase. H\u00e3y \u00e1p d\u1ee5ng migration 202610241300_profile_avatar_storage.sql r\u1ed3i th\u1eed l\u1ea1i.'
+        : errorMessage || 'Kh\u00f4ng th\u1ec3 t\u1ea3i \u1ea3nh \u0111\u1ea1i di\u1ec7n l\u00ean. Vui l\u00f2ng th\u1eed l\u1ea1i.');
     } finally {
       setIsAvatarUploading(false);
     }
@@ -150,43 +153,44 @@ function ProfilePage() {
           <div className="profile-cover">
             <span className="profile-verified">✦ Thành viên cộng đồng S'tiêng</span>
           </div>
-          <div className="profile-identity">
-            <div className="profile-identity-main">
-              <div className="profile-avatar">
-                {profileForm.avatar_url ? (
-                  <img src={profileForm.avatar_url} alt={`Ảnh đại diện của ${displayName}`} />
-                ) : (
-                  <span>{initials}</span>
-                )}
-                <span className="profile-online" aria-label="Đang trực tuyến">✓</span>
-                <button
-                  type="button"
-                  className="profile-avatar-change"
-                  onClick={() => avatarInputRef.current?.click()}
-                  disabled={isAvatarUploading}
-                  aria-label={isAvatarUploading ? 'Đang tải ảnh đại diện lên' : 'Đổi ảnh đại diện'}
-                  title={isAvatarUploading ? 'Đang tải ảnh lên…' : 'Đổi ảnh đại diện'}
-                >
-                  {isAvatarUploading ? <span className="profile-avatar-spinner" /> : (
-                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h3l1.5-2h7L17 7h3v12H4z" /><circle cx="12" cy="13" r="3.5" /></svg>
+          <div className="profile-identity-panel">
+            <div className="profile-identity">
+              <div className="profile-identity-main">
+                <div className="profile-avatar">
+                  {profileForm.avatar_url ? (
+                    <img src={profileForm.avatar_url} alt={`Ảnh đại diện của ${displayName}`} />
+                  ) : (
+                    <span>{initials}</span>
                   )}
-                </button>
-                <input ref={avatarInputRef} className="profile-avatar-input" type="file" accept="image/jpeg,image/png,image/webp" onChange={changeAvatar} aria-label="Chọn ảnh đại diện" />
-              </div>
-              <div className="profile-identity-copy">
-                <p className="profile-eyebrow">KHÔNG GIAN CÁ NHÂN</p>
-                <h1>{displayName}</h1>
-                <div className="profile-meta">
-                  <span>{user.email}</span>
-                  <span aria-hidden="true">•</span>
-                  <span>Tham gia từ {joinedDate}</span>
+                  {/* <span className="profile-online" aria-label="Đang trực tuyến">✓</span> */}
+                  <button
+                    type="button"
+                    className="profile-avatar-change"
+                    onClick={() => avatarInputRef.current?.click()}
+                    disabled={isAvatarUploading}
+                    aria-label={isAvatarUploading ? 'Đang tải ảnh đại diện lên' : 'Đổi ảnh đại diện'}
+                    title={isAvatarUploading ? 'Đang tải ảnh lên…' : 'Đổi ảnh đại diện'}
+                  >
+                    {isAvatarUploading ? <span className="profile-avatar-spinner" /> : (
+                      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h3l1.5-2h7L17 7h3v12H4z" /><circle cx="12" cy="13" r="3.5" /></svg>
+                    )}
+                  </button>
+                  <input ref={avatarInputRef} className="profile-avatar-input" type="file" accept="image/jpeg,image/png,image/webp" onChange={changeAvatar} aria-label="Chọn ảnh đại diện" />
+                </div>
+                <div className="profile-identity-copy">
+                  <h1>{displayName}</h1>
+                  <div className="profile-meta">
+                    <span>{user.email}</span>
+                    <span aria-hidden="true">•</span>
+                    <span>Tham gia từ {joinedDate}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="profile-hero-actions">
-              <button type="button" className="profile-edit" onClick={() => setActiveTab('overview')}>✎ Chỉnh sửa hồ sơ</button>
-              <button type="button" className="profile-settings" aria-label="Cài đặt tài khoản">⚙</button>
-              <button type="button" className="profile-back" onClick={() => navigate('/')}>Về trang tra cứu</button>
+              <div className="profile-hero-actions">
+                <button type="button" className="profile-edit" onClick={() => setActiveTab('overview')}>✎ Chỉnh sửa hồ sơ</button>
+                <button type="button" className="profile-settings" aria-label="Cài đặt tài khoản">⚙</button>
+                <button type="button" className="profile-back" onClick={() => navigate('/')}>Về trang tra cứu</button>
+              </div>
             </div>
           </div>
           <div className="profile-stats">

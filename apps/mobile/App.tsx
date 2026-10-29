@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import AuthModal from './components/AuthModal';
@@ -9,6 +9,7 @@ import ProfileScreen from './components/ProfileScreen';
 import NotebookScreen from './components/NotebookScreen';
 import CultureScreen from './components/CultureScreen';
 import { useAuthSession } from './hooks/useAuthSession';
+import { getAccount } from './services/profileService';
 import { COLORS, styles } from './theme';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -18,6 +19,20 @@ export default function App() {
   const { user, isInitializing, logout, showLogoutToast, dismissLogoutToast } = useAuthSession();
   const [screen, setScreen] = useState<AppScreen>('home');
   const [authVisible, setAuthVisible] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    if (!user?.id) {
+      setAvatarUrl(null);
+      return () => { active = false; };
+    }
+
+    getAccount()
+      .then((account) => { if (active) setAvatarUrl(account.avatar_url || null); })
+      .catch(() => { if (active) setAvatarUrl(null); });
+    return () => { active = false; };
+  }, [user?.id]);
 
   const handleLogout = async () => {
     const succeeded = await logout();
@@ -38,7 +53,7 @@ export default function App() {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <StatusBar style="dark" />
-        <Header user={user} onProfile={() => setScreen('profile')} onLogin={() => setAuthVisible(true)} onLogout={handleLogout} />
+        <Header user={user} avatarUrl={avatarUrl} onProfile={() => setScreen('profile')} onLogin={() => setAuthVisible(true)} onLogout={handleLogout} />
         {screen === 'home' ? (
           <HomeScreen user={user} onLogin={() => setAuthVisible(true)} />
         ) : screen === 'notebook' ? (
@@ -46,7 +61,7 @@ export default function App() {
         ) : screen === 'culture' ? (
           <CultureScreen />
         ) : user ? (
-          <ProfileScreen user={user} onBack={() => setScreen('home')} />
+          <ProfileScreen user={user} onBack={() => setScreen('home')} onAvatarChanged={setAvatarUrl} />
         ) : <HomeScreen user={user} onLogin={() => setAuthVisible(true)} />}
         <View style={styles.bottomNav}>
           {[

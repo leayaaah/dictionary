@@ -26,6 +26,8 @@ interface ContributionRecord {
 
 export function getAccount(): Promise<AccountRecord>;
 export function updateAccount(updates: { full_name?: string; avatar_url?: string }): Promise<AccountRecord>;
+export function uploadProfileAvatar(asset: { uri: string; mimeType?: string | null }, userId: string): Promise<{ path: string; publicUrl: string }>;
+export function removeProfileAvatarByUrl(url: string, userId: string): Promise<void>;
 export function getFavorites(): Promise<FavoriteRecord[]>;
 export function getFavoriteIds(wordIds: number[]): Promise<Set<number>>;
 export function addFavorite(wordId: number): Promise<FavoriteRecord>;
