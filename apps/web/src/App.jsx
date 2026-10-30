@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
 import NotebookPage from './pages/NotebookPage';
 import CulturePage from './pages/CulturePage';
+import AdminContributionsPage from './pages/AdminContributionsPage';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/notebook" element={<NotebookPage />} />
         <Route path="/culture" element={<CulturePage />} />
+        <Route path="/admin/contributions" element={<AdminContributionsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

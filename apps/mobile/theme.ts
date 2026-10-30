@@ -92,6 +92,7 @@ export const styles = StyleSheet.create({
   modalTitle: { color: COLORS.ink, fontSize: 27, fontWeight: '800', marginTop: 8 },
   modalSubtitle: { color: COLORS.muted, lineHeight: 21, marginTop: 6, marginBottom: 18 },
   formInput: { height: 48, borderWidth: 1, borderColor: COLORS.line, borderRadius: 10, paddingHorizontal: 14, color: COLORS.ink, marginBottom: 11, backgroundColor: '#fff' },
+  multilineInput: { height: 96, paddingTop: 13 },
   primaryButton: { backgroundColor: COLORS.primary, minHeight: 48, borderRadius: 10, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16, marginTop: 4 },
   primaryButtonText: { color: '#fff', fontWeight: '800' },
   switchAuth: { alignItems: 'center', paddingTop: 18 },

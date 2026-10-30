@@ -6,11 +6,14 @@ import {
   deleteSearchHistoryItem as deleteSearchHistoryItemWithClient,
   getAccount as getAccountWithClient,
   getContributions as getContributionsWithClient,
+  getContributionStatusLabel,
+  validateContribution,
   getFavoriteIds as getFavoriteIdsWithClient,
   getFavorites as getFavoritesWithClient,
   getSearchHistory as getSearchHistoryWithClient,
   removeFavorite as removeFavoriteWithClient,
   updateAccount as updateAccountWithClient,
+  updateContribution as updateContributionWithClient,
 } from '@dictionary/shared/profileService';
 import { supabase } from '../lib/supabaseClient';
 
@@ -57,3 +60,5 @@ export const deleteSearchHistoryItem = (id) => deleteSearchHistoryItemWithClient
 export const getContributions = () => getContributionsWithClient(supabase);
 export const createContribution = (contribution) => createContributionWithClient(supabase, contribution);
 export const deleteContribution = (id) => deleteContributionWithClient(supabase, id);
+export const updateContribution = (id, contribution) => updateContributionWithClient(supabase, id, contribution);
+export { getContributionStatusLabel, validateContribution };

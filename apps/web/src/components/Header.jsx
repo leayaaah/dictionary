@@ -14,7 +14,7 @@ function Header({ onOpenLogin, currentUser, isAuthInitializing, onLogout }) {
       </div>
       <nav className="nav-links" aria-label="Điều hướng chính">
         <Link className={pathname === '/' ? 'active' : ''} to="/">Trang chủ</Link>
-        <Link to="/#about">Về chúng tôi</Link>
+        {/* <Link to="/#about">Về chúng tôi</Link> */}
         <Link className={pathname === '/notebook' ? 'active' : ''} to="/notebook">Sổ tay</Link>
         <Link className={pathname === '/culture' ? 'active' : ''} to="/culture">Văn hóa</Link>
       </nav>
@@ -27,6 +27,11 @@ function Header({ onOpenLogin, currentUser, isAuthInitializing, onLogout }) {
               <span className="user-greeting">Xin chào,</span>{' '}
               {currentUser.full_name || currentUser.user_metadata?.full_name || currentUser.email || currentUser.name || currentUser.username}
             </Link>
+            {currentUser.app_metadata?.role === 'admin' && (
+              <Link className="header-admin-link" to="/admin/contributions" aria-label="Mở trang duyệt đóng góp từ vựng">
+                Duyệt từ vựng
+              </Link>
+            )}
             <button type="button" className="header-action" onClick={onLogout}>↪ <span>Đăng xuất</span></button>
           </>
         ) : (
