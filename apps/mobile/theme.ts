@@ -55,6 +55,8 @@ export const styles = StyleSheet.create({
   heroSubtitle: { color: COLORS.body, fontSize: 14, lineHeight: 21, marginTop: 10, marginBottom: 16 },
   searchBox: { backgroundColor: COLORS.card, borderRadius: 16, padding: 6, flexDirection: 'row', alignItems: 'center', shadowColor: COLORS.primaryDark, shadowOpacity: 0.1, shadowRadius: 14, elevation: 3, borderWidth: 1, borderColor: 'rgba(19,78,66,0.1)' },
   searchInput: { flex: 1, color: COLORS.ink, paddingHorizontal: 12, height: 46, fontSize: 15 },
+  clearButton: { paddingHorizontal: 8, paddingVertical: 6 },
+  clearButtonText: { color: COLORS.muted, fontSize: 26 },
   clearText: { color: COLORS.muted, fontSize: 26, paddingHorizontal: 8 },
   searchButton: { backgroundColor: COLORS.primary, borderRadius: 12, paddingHorizontal: 16, height: 44, justifyContent: 'center' },
   searchButtonText: { color: '#fff', fontWeight: '700' },
