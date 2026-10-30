@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import Header from '../components/Header';
 import SearchSection from '../components/SearchSection';
 import FeaturesSection from '../components/FeaturesSection';
@@ -20,15 +21,14 @@ function Home() {
     closeLogin,
     logout,
     searchWord,
-    clearSearch,
   } = useAppController();
 
-  const handleSearch = (keyword) => {
+  const handleSearch = useCallback((keyword) => {
     searchWord(keyword);
-    if (currentUser) {
+    if (currentUser && keyword) {
       addSearchHistory(keyword).catch((error) => console.error('Không thể lưu lịch sử tra cứu:', error));
     }
-  };
+  }, [currentUser, searchWord]);
 
   return (
     <>
@@ -37,11 +37,11 @@ function Home() {
         <section id="home" className="hero">
           <div className="overlay" />
           <div className="hero-content">
-            <SearchSection onSearch={handleSearch} onClear={clearSearch} />
+            <SearchSection onSearch={handleSearch} />
           </div>
         </section>
         <FeaturesSection searchKeyword={searchKeyword} currentUser={currentUser} />
-        <AboutSection />
+        {/* <AboutSection /> */}
       </main>
       <AppFooter />
       <LoginModal show={showLoginModal} onClose={closeLogin} />

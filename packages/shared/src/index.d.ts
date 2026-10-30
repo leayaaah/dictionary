@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+export type { AuthChangeEvent, AuthResponse, Session } from '@supabase/supabase-js';
 
 export interface Word {
   id: string;
@@ -7,11 +8,13 @@ export interface Word {
   pos?: string | null;
   meaning?: string | null;
   example?: string | null;
+  phonetic?: string | null;
 }
 
 export type Account = import('@supabase/supabase-js').User;
 
 export function createDictionaryClient(url: string, anonKey: string, options?: Record<string, unknown>): SupabaseClient;
+export function getAllWords(client: SupabaseClient): Promise<Word[]>;
 export function getWordsPage(
   client: SupabaseClient,
   options: { page: number; pageSize: number; searchKeyword?: string },
@@ -29,3 +32,25 @@ export function onAuthStateChange(
   client: SupabaseClient,
   callback: (event: import('@supabase/supabase-js').AuthChangeEvent, session: import('@supabase/supabase-js').Session | null) => void,
 ): ReturnType<SupabaseClient['auth']['onAuthStateChange']>['data']['subscription'];
+
+export {
+  addFavorite,
+  addSearchHistory,
+  createContribution,
+  deleteContribution,
+  updateContribution,
+  deleteSearchHistoryItem,
+  getAccount,
+  getContributions,
+  getAdminContributions,
+  getContributionStatusLabel,
+  moderateContribution,
+  validateContribution,
+  getFavoriteIds,
+  getFavorites,
+  getSearchHistory,
+  removeFavorite,
+  updateAccount,
+  CONTRIBUTION_FIELD_LIMITS,
+} from './profileService';
+export type { Contribution } from './profileService';

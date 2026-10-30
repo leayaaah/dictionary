@@ -1,5 +1,25 @@
 const WORDS_TABLE = 'Words';
 
+export async function getAllWords(client) {
+  const pageSize = 1000;
+  const words = [];
+  let page = 0;
+
+  while (true) {
+    const from = page * pageSize;
+    const { data, error } = await client
+      .from(WORDS_TABLE)
+      .select('*')
+      .order('id', { ascending: false })
+      .range(from, from + pageSize - 1);
+
+    if (error) throw error;
+    words.push(...(data || []));
+    if (!data || data.length < pageSize) return words;
+    page += 1;
+  }
+}
+
 export async function getWordsPage(client, { page, pageSize, searchKeyword = '' }) {
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
