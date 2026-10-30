@@ -1,116 +1,58 @@
-import React from 'react';
+import './AppFooter.css';
+
+const supportLinks = [
+  { label: 'Báo lỗi từ ngữ / dịch thuật', href: '#report' },
+  { label: 'Đóng góp từ mới', href: '#contribute' },
+  { label: 'Trung tâm trợ giúp (FAQ)', href: '#help' },
+  { label: 'Liên hệ hỗ trợ', href: '#contact' },
+];
+
+const aboutLinks = [
+  { label: 'Giới thiệu từ điển', href: '#about' },
+  { label: 'Điều khoản sử dụng', href: '#terms' },
+  { label: 'Chính sách bảo mật', href: '#privacy' },
+  { label: 'Mạng xã hội & kết nối', href: '#socials' },
+];
+
+function FooterLinkGroup({ id, title, links }) {
+  return (
+    <section className="app-footer__section" aria-labelledby={`${id}-title`}>
+      <h2 id={`${id}-title`} className="app-footer__title">{title}</h2>
+      <ul className="app-footer__links">
+        {links.map((link) => (
+          <li key={link.label}>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 function AppFooter() {
   return (
-    <footer style={styles.footer}>
-      <div style={styles.container}>
-        <div style={styles.grid}>
-          {/* Cột 1: Hỗ trợ & Góp ý */}
-          <div style={styles.column}>
-            <h3 style={styles.heading}>Hỗ trợ & Góp ý</h3>
-            <ul style={styles.list}>
-              <li style={styles.listItem}>
-                <a href="#report" style={styles.link}>Báo lỗi từ ngữ / Dịch thuật</a>
-              </li>
-              <li style={styles.listItem}>
-                <a href="#contribute" style={styles.link}>Đóng góp từ mới</a>
-              </li>
-              <li style={styles.listItem}>
-                <a href="#help" style={styles.link}>Trung tâm trợ giúp (FAQ)</a>
-              </li>
-              <li style={styles.listItem}>
-                <a href="#contact" style={styles.link}>Liên hệ hỗ trợ</a>
-              </li>
-            </ul>
-          </div>
+    <footer className="app-footer">
+      <div className="app-footer__container">
+        <div className="app-footer__content">
+          <FooterLinkGroup id="support" title="Hỗ trợ & góp ý" links={supportLinks} />
+          <FooterLinkGroup id="about" title="Về chúng tôi" links={aboutLinks} />
 
-          {/* Cột 2: Về chúng tôi */}
-          <div style={styles.column}>
-            <h3 style={styles.heading}>Về chúng tôi</h3>
-            <ul style={styles.list}>
-              <li style={styles.listItem}>
-                <a href="#about" style={styles.link}>Giới thiệu từ điển</a>
-              </li>
-              <li style={styles.listItem}>
-                <a href="#terms" style={styles.link}>Điều khoản sử dụng</a>
-              </li>
-              <li style={styles.listItem}>
-                <a href="#privacy" style={styles.link}>Chính sách bảo mật</a>
-              </li>
-              <li style={styles.listItem}>
-                <a href="#socials" style={styles.link}>Mạng xã hội & Kết nối</a>
-              </li>
-            </ul>
-          </div>
+          <section className="app-footer__section app-footer__copyright" aria-labelledby="copyright-title">
+            <h2 id="copyright-title" className="app-footer__title">Thông tin bản quyền</h2>
+            <p>
+              © 2026 SDictionary
+              <br />
+              Từ điển học tập dành cho mọi người.
+            </p>
+          </section>
         </div>
 
-        <div style={styles.divider} />
-
-        {/* Thông tin Copyright */}
-        <div style={styles.copyright}>
-          <p style={{ margin: 0 }}>
-            &copy; 2026 THUYLY - A 20 years old person.
-          </p>
+        <div className="app-footer__bottom">
+          <span>© 2026 SDictionary. All rights reserved.</span>
         </div>
       </div>
     </footer>
   );
 }
-
-// Style thuần tự viết bằng JS Object (Inline Styles)
-const styles = {
-  footer: {
-    backgroundColor: 'rgba(13, 57, 48, 0.48)',
-    color: '#ffffff',
-    padding: '32px 16px 16px 16px',
-    fontFamily: 'system-ui, -apple-system, sans-serif',
-  },
-  container: {
-    maxWidth: '960px',
-    margin: '0 auto',
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '24px',
-    marginBottom: '24px',
-  },
-  column: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  heading: {
-    color: '#ffc107',
-    fontSize: '14px',
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    marginBottom: '12px',
-    marginTop: 0,
-  },
-  list: {
-    listStyle: 'none',
-    padding: 0,
-    margin: 0,
-  },
-  listItem: {
-    marginBottom: '8px',
-  },
-  link: {
-    color: '#b0b0b0',
-    textDecoration: 'none',
-    fontSize: '14px',
-    transition: 'color 0.2s ease',
-  },
-  divider: {
-    borderTop: '1px solid #333333',
-    marginBottom: '16px',
-  },
-  copyright: {
-    textAlign: 'center',
-    fontSize: '13px',
-    color: '#888888',
-  },
-};
 
 export default AppFooter;
