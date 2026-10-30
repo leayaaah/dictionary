@@ -16,10 +16,14 @@ export interface HistoryRecord {
 
 export interface Contribution {
   id: string;
-  word: string;
-  definition: string;
-  part_of_speech: string | null;
+  word_st: string;
+  word?: string;
+  word_vi: string | null;
+  pos: string | null;
+  meaning: string;
+  definition?: string;
   phonetic: string | null;
+  example?: string | null;
   status: 'pending' | 'approved' | 'rejected';
   admin_note?: string | null;
   reviewed_by?: string | null;

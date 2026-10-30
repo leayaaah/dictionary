@@ -25,16 +25,20 @@ interface ProfileScreenProps {
 }
 
 interface ContributionForm {
-  word: string;
-  definition: string;
-  part_of_speech: string;
+  word_st: string;
+  word_vi: string;
+  pos: string;
+  meaning: string;
   phonetic: string;
+  example: string;
 }
 
 const contributionFields: { key: keyof ContributionForm; placeholder: string }[] = [
-  { key: 'word', placeholder: 'Từ mới *' },
-  { key: 'definition', placeholder: 'Định nghĩa *' },
-  { key: 'part_of_speech', placeholder: 'Từ loại' },
+  { key: 'word_st', placeholder: 'Từ mới *' },
+  { key: 'word_vi', placeholder: 'Nghĩa tiếng Việt *' },
+  { key: 'pos', placeholder: 'Từ loại' },
+  { key: 'meaning', placeholder: 'Định nghĩa *' },
+  { key: 'example', placeholder: 'Ví dụ' },
   { key: 'phonetic', placeholder: 'Phiên âm' },
 ];
 
@@ -44,7 +48,7 @@ function ProfileScreen({ user, onBack, onAvatarChanged }: ProfileScreenProps) {
   const [favorites, setFavorites] = useState<FavoriteRecord[]>([]);
   const [history, setHistory] = useState<HistoryRecord[]>([]);
   const [contributions, setContributions] = useState<Contribution[]>([]);
-  const [form, setForm] = useState<ContributionForm>({ word: '', definition: '', part_of_speech: '', phonetic: '' });
+  const [form, setForm] = useState<ContributionForm>({ word_st: '', word_vi: '', pos: '', meaning: '', phonetic: '', example: '' });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isAvatarUploading, setIsAvatarUploading] = useState(false);
@@ -139,7 +143,7 @@ function ProfileScreen({ user, onBack, onAvatarChanged }: ProfileScreenProps) {
     try {
       const created = await createContribution(normalized);
       setContributions((items) => [created, ...items]);
-      setForm({ word: '', definition: '', part_of_speech: '', phonetic: '' });
+      setForm({ word_st: '', word_vi: '', pos: '', meaning: '', phonetic: '', example: '' });
       setMessage('Đóng góp đang chờ kiểm duyệt.');
       setError('');
     } catch (submitError) {
@@ -208,9 +212,9 @@ function ProfileScreen({ user, onBack, onAvatarChanged }: ProfileScreenProps) {
         {tab === 'contributions' ? (
           <View>
             <Text style={styles.cardTitle}>Đóng góp từ vựng</Text>
-            {contributionFields.map(({ key, placeholder }) => <View key={key}><TextInput value={form[key]} maxLength={key === 'word' ? 100 : key === 'definition' ? 1000 : key === 'part_of_speech' ? 50 : 100} onChangeText={(value) => { setForm({ ...form, [key]: value }); setContributionErrors((items) => ({ ...items, [key]: '' })); setMessage(''); setError(''); }} placeholder={placeholder} style={styles.formInput} />{contributionErrors[key] ? <Text style={styles.errorText}>{contributionErrors[key]}</Text> : null}</View>)}
+            {contributionFields.map(({ key, placeholder }) => <View key={key}><TextInput value={form[key]} maxLength={key === 'word_st' || key === 'word_vi' ? 100 : key === 'meaning' || key === 'example' ? 1000 : key === 'pos' ? 50 : 100} multiline={key === 'meaning' || key === 'example'} textAlignVertical={key === 'meaning' || key === 'example' ? 'top' : 'center'} onChangeText={(value) => { setForm({ ...form, [key]: value }); setContributionErrors((items) => ({ ...items, [key]: '' })); setMessage(''); setError(''); }} placeholder={placeholder} style={[styles.formInput, (key === 'meaning' || key === 'example') && styles.multilineInput]} />{contributionErrors[key] ? <Text style={styles.errorText}>{contributionErrors[key]}</Text> : null}</View>)}
             <Pressable onPress={contribute} disabled={isContributionSubmitting} style={styles.primaryButton}><Text style={styles.primaryButtonText}>{isContributionSubmitting ? 'Đang gửi…' : 'Gửi để kiểm duyệt'}</Text></Pressable>
-            {contributions.map((item) => <View style={styles.listItem} key={item.id}><View style={styles.listItemContent}><Text style={styles.listTitle}>{item.word}</Text><Text style={styles.listDescription}>{item.definition} · {getContributionStatusLabel(item.status)}</Text>{item.status === 'rejected' && item.admin_note ? <Text style={styles.errorText}>Lý do từ chối: {item.admin_note}</Text> : null}{item.status === 'approved' && item.published_word_id ? <Text style={styles.listDescription}>Mã từ đã duyệt: {item.published_word_id}</Text> : null}</View>{item.status === 'pending' && <Pressable style={styles.deleteButton} onPress={async () => { try { await deleteContribution(item.id); setContributions((items) => items.filter((entry) => entry.id !== item.id)); } catch (deleteError) { setError(deleteError instanceof Error ? deleteError.message : 'Không thể xóa đóng góp.'); } }}><Text style={styles.deleteText}>Xóa</Text></Pressable>}</View>)}
+            {contributions.map((item) => <View style={styles.listItem} key={item.id}><View style={styles.listItemContent}><Text style={styles.listTitle}>{item.word_st}</Text><Text style={styles.listDescription}>{item.word_vi} · {item.meaning} · {getContributionStatusLabel(item.status)}</Text>{item.example ? <Text style={styles.listDescription}>Ví dụ: {item.example}</Text> : null}{item.phonetic ? <Text style={styles.listDescription}>Phiên âm: {item.phonetic}</Text> : null}{item.status === 'rejected' && item.admin_note ? <Text style={styles.errorText}>Lý do từ chối: {item.admin_note}</Text> : null}{item.status === 'approved' && item.published_word_id ? <Text style={styles.listDescription}>Mã từ đã duyệt: {item.published_word_id}</Text> : null}</View>{item.status === 'pending' && <Pressable style={styles.deleteButton} onPress={async () => { try { await deleteContribution(item.id); setContributions((items) => items.filter((entry) => entry.id !== item.id)); } catch (deleteError) { setError(deleteError instanceof Error ? deleteError.message : 'Không thể xóa đóng góp.'); } }}><Text style={styles.deleteText}>Xóa</Text></Pressable>}</View>)}
           </View>
         ) : null}
       </View>

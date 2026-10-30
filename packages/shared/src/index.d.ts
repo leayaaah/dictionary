@@ -8,6 +8,7 @@ export interface Word {
   pos?: string | null;
   meaning?: string | null;
   example?: string | null;
+  phonetic?: string | null;
 }
 
 export type Account = import('@supabase/supabase-js').User;
@@ -37,6 +38,7 @@ export {
   addSearchHistory,
   createContribution,
   deleteContribution,
+  updateContribution,
   deleteSearchHistoryItem,
   getAccount,
   getContributions,

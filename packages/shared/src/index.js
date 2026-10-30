@@ -6,6 +6,7 @@ export {
   addSearchHistory,
   createContribution,
   deleteContribution,
+  updateContribution,
   deleteSearchHistoryItem,
   getAccount,
   getContributions,

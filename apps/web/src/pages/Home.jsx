@@ -41,7 +41,7 @@ function Home() {
           </div>
         </section>
         <FeaturesSection searchKeyword={searchKeyword} currentUser={currentUser} />
-        <AboutSection />
+        {/* <AboutSection /> */}
       </main>
       <AppFooter />
       <LoginModal show={showLoginModal} onClose={closeLogin} />

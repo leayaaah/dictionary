@@ -19,10 +19,15 @@ interface HistoryRecord {
 
 interface ContributionRecord {
   id: string;
-  word: string;
-  definition: string;
-  part_of_speech: string | null;
+  word_st: string;
+  word?: string;
+  word_vi: string;
+  meaning: string;
+  definition?: string;
+  pos: string | null;
+  part_of_speech?: string | null;
   phonetic: string | null;
+  example?: string | null;
   status: 'pending' | 'approved' | 'rejected';
   admin_note?: string | null;
   reviewed_by?: string | null;
@@ -43,11 +48,21 @@ export function getSearchHistory(): Promise<HistoryRecord[]>;
 export function deleteSearchHistoryItem(id: string | number): Promise<void>;
 export function getContributions(): Promise<ContributionRecord[]>;
 export function createContribution(contribution: {
-  word: string;
-  definition: string;
-  part_of_speech?: string;
+  word_st: string;
+  word_vi: string;
+  meaning: string;
+  pos?: string;
   phonetic?: string;
+  example?: string;
+}): Promise<ContributionRecord>;
+export function updateContribution(id: string, contribution: {
+  word_st: string;
+  word_vi: string;
+  meaning: string;
+  pos?: string;
+  phonetic?: string;
+  example?: string;
 }): Promise<ContributionRecord>;
 export function deleteContribution(id: string | number): Promise<void>;
 export function getContributionStatusLabel(status?: string): string;
-export function validateContribution(values: { word: string; definition: string; part_of_speech?: string; phonetic?: string }): { normalized: { word: string; definition: string; part_of_speech: string; phonetic: string }; errors: Record<string, string> };
+export function validateContribution(values: { word_st: string; word_vi: string; pos?: string; meaning: string; phonetic?: string; example?: string }): { normalized: { word_st: string; word_vi: string; pos: string; meaning: string; phonetic: string; example: string }; errors: Record<string, string> };

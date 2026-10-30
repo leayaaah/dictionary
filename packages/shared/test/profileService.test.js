@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   createContribution,
   deleteContribution,
+  updateContribution,
   getContributionStatusLabel,
   moderateContribution,
   validateContribution,
@@ -57,34 +58,34 @@ function clientWith({
 
 test('normalizes whitespace and validates required values and field limits', () => {
   const { normalized, errors } = validateContribution({
-    word: '  take\t off ', definition: '  leave\n quickly ', part_of_speech: ' verb  ', phonetic: ' /teɪk/ ',
+    word_st: '  take\t off ', word_vi: '  rời đi ', pos: ' verb  ', meaning: '  leave\n quickly ', phonetic: ' /teɪk/ ', example: '  Take off quickly. ',
   });
   assert.deepEqual(errors, {});
-  assert.deepEqual(normalized, { word: 'take off', definition: 'leave quickly', part_of_speech: 'verb', phonetic: '/teɪk/' });
-  assert.deepEqual(Object.keys(validateContribution({ word: ' ', definition: '' }).errors).sort(), ['definition', 'word']);
+  assert.deepEqual(normalized, { word_st: 'take off', word_vi: 'rời đi', pos: 'verb', meaning: 'leave quickly', phonetic: '/teɪk/', example: 'Take off quickly.' });
+  assert.deepEqual(Object.keys(validateContribution({ word_st: ' ', word_vi: '', meaning: '' }).errors).sort(), ['meaning', 'word_st', 'word_vi']);
   assert.deepEqual(Object.keys(validateContribution({
-    word: 'w'.repeat(101), definition: 'd'.repeat(1001), part_of_speech: 'p'.repeat(51), phonetic: 'f'.repeat(101),
-  }).errors).sort(), ['definition', 'part_of_speech', 'phonetic', 'word']);
+    word_st: 'w'.repeat(101), word_vi: 'v'.repeat(101), meaning: 'd'.repeat(1001), pos: 'p'.repeat(51), phonetic: 'f'.repeat(101), example: 'e'.repeat(1001),
+  }).errors).sort(), ['example', 'meaning', 'phonetic', 'pos', 'word_st', 'word_vi']);
 });
 
 test('requires a signed-in user before contribution work', async () => {
-  await assert.rejects(createContribution(clientWith({ user: null }), { word: 'hello', definition: 'xin chào' }), /đăng nhập/i);
+  await assert.rejects(createContribution(clientWith({ user: null }), { word_st: 'hello', word_vi: 'xin chào', meaning: 'xin chào' }), /đăng nhập/i);
 });
 
 test('rejects a contribution when its word already exists', async () => {
-  await assert.rejects(createContribution(clientWith({ existingWord: { id: 'word-1' } }), { word: 'hello', definition: 'xin chào' }), /đã có trong từ điển/i);
+  await assert.rejects(createContribution(clientWith({ existingWord: { id: 'word-1' } }), { word_st: 'hello', word_vi: 'xin chào', meaning: 'xin chào' }), /đã có trong từ điển/i);
 });
 
 test('rejects a duplicate pending contribution from the same user', async () => {
-  await assert.rejects(createContribution(clientWith({ pendingItems: [{ word: 'HELLO', definition: 'xin chào' }] }), { word: ' hello ', definition: 'xin   chào' }), /tương tự/i);
+  await assert.rejects(createContribution(clientWith({ pendingItems: [{ word_st: 'HELLO', word_vi: 'xin chào', meaning: 'xin chào' }] }), { word_st: ' hello ', word_vi: 'xin chào', meaning: 'xin   chào' }), /tương tự/i);
 });
 
 test('submits normalized values through the database RPC', async () => {
   const client = clientWith();
-  await createContribution(client, { word: ' hello  world ', definition: ' a   greeting ' });
+  await createContribution(client, { word_st: ' hello  world ', word_vi: ' xin chào ', meaning: ' a   greeting ' });
   assert.deepEqual(client.calls[0], {
     name: 'submit_contribution',
-    args: { contribution_data: { word: 'hello world', definition: 'a greeting', part_of_speech: '', phonetic: '' } },
+    args: { contribution_data: { word_st: 'hello world', word_vi: 'xin chào', pos: '', meaning: 'a greeting', example: '', phonetic: '' } },
   });
 });
 
@@ -111,6 +112,20 @@ test('does not let an ordinary user call moderation RPCs', async () => {
   const client = clientWith({ user: { id: 'user-1', app_metadata: { role: 'user' } } });
   await assert.rejects(moderateContribution(client, 'approve', 'contribution-1'), /không có quyền/i);
   assert.equal(client.calls.length, 0);
+});
+
+test('lets an admin save a complete pending contribution draft', async () => {
+  const client = clientWith({ user: { id: 'admin-1', app_metadata: { role: 'admin' } } });
+  await updateContribution(client, 'contribution-1', {
+    word_st: ' hello ', word_vi: ' xin chào ', pos: ' noun ', meaning: ' a greeting ', phonetic: '', example: ' Hello there. ',
+  });
+  assert.deepEqual(client.calls[0], {
+    name: 'update_contribution',
+    args: {
+      contribution_id: 'contribution-1',
+      contribution_data: { word_st: 'hello', word_vi: 'xin chào', pos: 'noun', meaning: 'a greeting', example: 'Hello there.', phonetic: '' },
+    },
+  });
 });
 
 test('deletes only a pending contribution and handles a concurrent moderation', async () => {

@@ -428,7 +428,8 @@
 }
 
 .profile-form input,
-.contribution-form input {
+.contribution-form input,
+.contribution-form textarea {
   min-width: 0;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 8px;
@@ -441,7 +442,8 @@
 }
 
 .profile-form input:focus,
-.contribution-form input:focus {
+.contribution-form input:focus,
+.contribution-form textarea:focus {
   border-color: rgba(224, 159, 62, 0.7);
   box-shadow: 0 0 0 3px rgba(224, 159, 62, 0.18);
 }
@@ -534,6 +536,13 @@
   color: inherit;
   font-size: 13px;
   font-weight: 600;
+}
+
+.contribution-form textarea {
+  min-height: 96px;
+  padding: 12px 14px;
+  resize: vertical;
+  font: inherit;
 }
 
 .contribution-form .profile-primary {
@@ -1299,5 +1308,79 @@ body:has(.profile-page) {
 
   .profile-list-item > .profile-list-value {
     overflow-wrap: anywhere;
+  }
+}
+
+/* Contribution form follows the mobile profile card language: compact fields,
+   mint surfaces, rounded controls, and a full-width primary action. */
+.contribution-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 18px;
+  margin-top: 18px;
+  border: 1px solid #dcebe4;
+  border-radius: 18px;
+  background: var(--color-primary-container);
+  box-shadow: var(--shadow-soft);
+}
+
+.contribution-form label {
+  gap: 7px;
+  color: var(--color-ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.contribution-form input,
+.contribution-form textarea {
+  width: 100%;
+  min-height: 48px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: var(--color-card);
+  color: var(--color-ink);
+  font: inherit;
+  line-height: 1.45;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.contribution-form textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.contribution-form input:focus,
+.contribution-form textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(19, 78, 66, 0.14);
+  outline: none;
+}
+
+.contribution-form .profile-error {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-danger, #b42318);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.contribution-form .profile-primary {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 2px;
+  border-radius: 10px;
+  justify-self: stretch;
+  box-shadow: 0 5px 12px rgba(19, 78, 66, 0.14);
+}
+
+@media (max-width: 700px) {
+  .contribution-form {
+    grid-template-columns: 1fr;
+    padding: 16px;
+    border-radius: 16px;
   }
 }
